@@ -15,11 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 
-from homepage import views
-from django.contrib.auth.decorators import login_required
+from . import views
 
 urlpatterns = [
     url(r'^$', views.MainView.as_view()),
-    url(r'^movie/', include('movie.urls')),
-    url(r'^music/', include('music.urls')),
 ]

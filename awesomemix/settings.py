@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+from configparser import ConfigParser
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'homepage',
+    'movie',
+    'music',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +123,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+MEDIA_URL = '/profile/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'homepage/profile')
+
+# Configures Django to merely print emails rather than sending them.
+# Comment out this line to enable real email-sending.
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# To enable real email-sending, you should uncomment and
+# configure the settings below.
+
+config = ConfigParser()
+config.read(os.path.join(BASE_DIR, 'config.ini'))
+
+EMAIL_HOST = config.get('Email', 'Host')
+EMAIL_PORT = int(config.get('Email', 'Port'))
+EMAIL_HOST_USER = config.get('Email', 'User')
+EMAIL_HOST_PASSWORD = config.get('Email', 'Password')
+EMAIL_USE_SSL = True
+
+print('Email host:port = {host}:{port}, user={user}'.format(
+        host=EMAIL_HOST, port=EMAIL_PORT, user=EMAIL_HOST_USER))
