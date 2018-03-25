@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 
-urlpatterns = [
+from . import views
 
+app_name = 'movie'
+urlpatterns = [
+    url(r'^$', views.MainView.as_view(), name='homepage'),
 ]

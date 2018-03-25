@@ -1,0 +1,43 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+{% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="section container">
+  <div class="row">
+    <div class="col s12 m6 offset-m3">
+      <div class="card login-wrapper">
+        <div class="card-content">
+        <form class="form-signin" method="post">
+        {% csrf_token %}
+        <h4 class="center">Login</h4>
+
+        {% if form.errors %}
+        <div class="errors"><ul><li>Invalid login credentials.</li></ul></div>
+        {% endif %}
+
+        <div class="input-field">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" required autofocus>
+        </div>
+
+        <div class="input-field">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+        </div>
+
+        <input type="submit" class="btn-large z-depth-0" value="Sign In">
+        <pre></pre>
+        <a href="{% url 'homepage:register' %}">Register</a>
+        <input type="hidden" name="next" value="{{ next }}"/>
+        </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

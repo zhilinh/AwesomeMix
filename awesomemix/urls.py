@@ -20,6 +20,7 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     url(r'^$', views.MainView.as_view()),
+    url(r'^homepage/', include('homepage.urls')),
     url(r'^movie/', include('movie.urls')),
     url(r'^music/', include('music.urls')),
 ]

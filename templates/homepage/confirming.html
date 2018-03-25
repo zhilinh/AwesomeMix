@@ -1,0 +1,13 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="col-md-8 order-md-1">
+    <h4 class="mb-3">Email Confirmation</h4>
+    <p>A confirmation email has been sent to <a>{{ email }}</a>.  Please click the link
+        in that email to confirm your email address and complete your registration for
+        your address book.
+    </p>
+</div>
+{% endblock %}

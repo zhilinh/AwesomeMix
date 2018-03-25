@@ -1,0 +1,12 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="col-md-8 order-md-1">
+    <h4 class="mb-3">Thank you for confirmation</h4>
+    <p> Now you can start browsing <a href="{% url 'homepage:homepage' %}">what's new</a>
+        on Blog Master.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+{% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
+    <script src="{% static 'js/movie-homepage.js' %}"></script>
+{% endblock %}

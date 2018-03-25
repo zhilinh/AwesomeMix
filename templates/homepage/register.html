@@ -1,0 +1,71 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+{% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+
+<script src="{% static 'js/register.js' %}"></script>
+
+<div class="section container">
+  <div class="row">
+    <div class="col s12 m6 offset-m3">
+      <div class="card login-wrapper">
+        <div class="card-content">
+        <h4>Account Registration</h4>
+
+        <form method='post' class="needs-validation" novalidate>
+        {% csrf_token %}
+
+        {% for field in form %}
+        {% for error in field.errors %}
+        <div class="errors">{{error}}</div>
+        {% endfor %}
+        {% endfor %}
+
+        {% for error in form.non_field_errors %}
+        <div class="errors">{{error}}</div>
+        {% endfor %}
+
+        <div class="input-field">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" id="username" required>
+        </div>
+
+        <div class="row">
+            <div class="col s6 input-field">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" name="first_name" id="firstName" value="" required>
+            </div>
+            <div class="col s6 input-field">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control" name="last_name" id="lastName" value="" required>
+            </div>
+        </div>
+
+        <div class="input-field">
+            <label for="email">Email<!--<span class="text-muted">(Optional)</span> --></label>
+            <input type="email" class="form-control" name="email" id="email" required>
+        </div>
+
+        <div class="input-field">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" name="password1" id="password1" required>
+        </div>
+
+        <div class="input-field">
+            <label for="password2">Confirm Password</label>
+            <input type="password" class="form-control" name="password2" id="password2" required>
+        </div>
+
+        <button class="btn-large z-depth-0" type="submit">Register</button>
+        </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
