@@ -2,10 +2,23 @@
 {% load staticfiles %}
 
 {% block user-info %}
-{% include "homepage/nav.html" %}
+    {% include "homepage/nav.html" %}
 {% endblock %}
 
 {% block content %}
     <script src="{% static 'js/jquery-2.1.1.min.js' %}"></script>
-    <script src="{% static 'js/movie-homepage.js' %}"></script>
+    <!--<script src="{% static 'js/movie-homepage.js' %}"></script>-->
+
+    <div class="card-panel z-depth-0">
+        <div class="container">
+            <div class="input-field">
+                <form action="{% url 'movie:search' %}" method="get">
+                    <i class="prefix material-icons">search</i>
+                    <input type="text" class="col s6" name="movie" id="movie" placeholder="Find movies">
+                </form>
+            </div>
+            <div class="collection"></div>
+        </div>
+    </div>
+
 {% endblock %}

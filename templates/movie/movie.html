@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block user-info %}
-{% include "homepage/nav.html" %}
+    {% include "homepage/nav.html" %}
 {% endblock %}
 
 {% block content %}
@@ -21,6 +21,18 @@
                 <p>Release Date:</p>
                 <p>Duration:</p>
                 <p>IMDB:</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-title">Description</div>
+                <div class="card-content"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-title">Cast</div>
+                <div class="card-content"></div>
             </div>
         </div>
     </div>

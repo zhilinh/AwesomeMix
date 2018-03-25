@@ -20,4 +20,6 @@ from . import views
 app_name = 'movie'
 urlpatterns = [
     url(r'^$', views.MainView.as_view(), name='homepage'),
+    url(r'^search_result', views.search, name='search'),
+    url(r'^(?P<username>[a-zA-Z0-9]+)$', views.MovieView.as_view(), name='movie')
 ]
