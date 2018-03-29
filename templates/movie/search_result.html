@@ -15,7 +15,7 @@
                         <img src="https://image.tmdb.org/t/p/w185{{ result.poster_path }}">
                     </div>
                     <div class="col s9">
-                        <a>{{ result.title }}</a>
+                        <a href="/movie/{{ result.id }}">{{ result.title }}</a>
                         <p>{{ result.vote_average }} ({{ result.vote_count }} votes)<p>
                         <p>{{ result.popularity }}</p>
                         <p>{{ result.overview }}</p>

@@ -1,3 +1,4 @@
+*.idea
 *.ini
 *.jpg
 *.xml
@@ -16,3 +17,5 @@ local_settings.py
 
 # Django's SQL Lite Database File
 db.sqlite3
+*.tsv
+*.json
