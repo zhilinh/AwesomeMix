@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block content %}
+    <script src="{% static 'js/movie.js' %}"></script>
+
     <div class="container">
         <div class="row">
             <p></p>
@@ -13,11 +15,12 @@
                 <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}">
             </div>
             <div class="col s8">
-                <h5>{{ title }}</h5>
-                <p>Director: {% for director in directors %}{{ director }} / {% endfor %}</p>
-                <p>Writer: {% for writer in writers %}{{ writer }} / {% endfor %}</p>
-                <p>Cast:</p>
+                <h5>{{ title }} ({{ release_year }})</h5>
+                <p>Director: {% for director in credits.directors %}{{ director.name }} / {% endfor %}</p>
+                <p>Writer: {% for writer in credits.writers %}{{ writer.name }} / {% endfor %}</p>
+                <p>Cast: {% for actor in credits.cast %}{{ actor.name }} / {% endfor %}</p>
                 <p>Genres: {% for genre in genres %}{{ genre.name }} / {% endfor %}</p>
+                <p>Homepage: <a href="{{ homepage }}">{{ homepage }}</a></p>
                 <p>Region: {% for region in production_countries %}{{ region.name }} / {% endfor %}</p>
                 <p>Language: {{ original_language }}</p>
                 <p>Release Date: {{ release_date }}</p>
@@ -27,14 +30,26 @@
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title">Description</div>
+                <div class="card-title col s1">Description</div><br>
                 <div class="card-content">{{ overview }}</div>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title">Cast</div>
+                <div class="card-title col s1">Cast</div><br>
                 <div class="card-content"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-title col s1">Videos</div><br>
+                <div class="card-content center slider">
+                    <ul class="slides transparent">
+                        <li>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
