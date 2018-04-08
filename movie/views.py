@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
+from django.http import HttpResponse, Http404
+from django.db import transaction
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 import tmdbsimple as tmdb
 import requests
 import json
@@ -7,7 +11,7 @@ import os
 import time
 
 from .forms import MovieSearchForm
-from .models import Movie, Person
+from .models import Movie, MovieComment
 from configparser import ConfigParser
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,6 +66,7 @@ class MainView(TemplateView):
 class MovieView(TemplateView):
     template_name = 'movie/movie.html'
 
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         payload = { 'api_key': TMDB_API_KEY, 'language': 'en-US', 'append_to_response': 'credits,videos'}
@@ -100,6 +105,15 @@ class MovieView(TemplateView):
             videos[count // 3].append(result['videos']['results'][count])
             count += 1
         result['videos'] = videos
+
+        result['user_comment'] = {'rate': 0}
+        if request.user.is_authenticated():
+            try:
+                user_comment = MovieComment.objects.get(movie_id=result['id'],
+                                                        user=request.user)
+                result['user_comment'] = {'rate': user_comment.rate}
+            except:
+                pass
         return self.render_to_response(result)
 
 def search(request):
@@ -111,4 +125,41 @@ def search(request):
         url = "https://api.themoviedb.org/3/search/movie"
         response = requests.get(url, params=payload)
         context = response.json()
-    return render(request, 'movie/search_result.html', context)
+        return render(request, 'movie/search_result.html', context)
+    else:
+        return Http404
+
+@transaction.atomic
+def rate(request):
+    if request.method != "POST" or 'movieId' not in request.POST or 'rating' not in request.POST:
+        return Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to make ratings and comments.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    context = {}
+    user_profile = request.user.user_profile
+    try:
+        movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
+        movie.all_rates = movie.all_rates + request.POST['rating']
+        movie.rater_num = movie.rater_num + 1
+    except:
+        movie = Movie(tmdb_id=request.POST['movieId'],
+                      all_rates=request.POST['rating'],
+                      rater_num=1)
+    movie.save()
+
+    try:
+        comment = MovieComment.objects.get(movie_id=request.POST['movieId'],
+                                           user=request.user)
+    except:
+        comment = MovieComment(movie_id=request.POST['movieId'], user=request.user)
+    comment.rate = request.POST['rating']
+    comment.save()
+    watched_list = json.loads(user_profile.movie_watched)
+    watched_list.append(movie.tmdb_id)
+    user_profile.movie_watched = json.dumps(watched_list)
+    user_profile.save()
+
+    return HttpResponse(context, content_type='application/json')

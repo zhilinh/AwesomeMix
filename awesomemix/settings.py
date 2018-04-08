@@ -74,6 +74,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'awesomemix.wsgi.application'
 
+# URL to use if the authentication system requires a user to log in.
+LOGIN_URL = '/homepage/login'
+
+# Default URL to redirect to after a user logs in.
+LOGIN_REDIRECT_URL = '/homepage/profile'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases

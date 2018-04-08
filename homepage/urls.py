@@ -24,6 +24,8 @@ app_name = 'homepage'
 urlpatterns = [
     url(r'^$', views.MainView.as_view(), name='homepage'),
     url(r'^register$', views.register, name='register'),
+    url(r'^confirm_registration/(?P<username>[a-zA-Z0-9]+)/(?P<token>[a-z0-9\-]+)$',
+        views.confirm_registration, name='confirmed'),
     url(r'^profile', views.profile, name='profile'),
     # Route for built-in authentication with our own custom login page
     url(r'^login$', auth_views.login, {'template_name': 'homepage/login.html'}, name='login'),
