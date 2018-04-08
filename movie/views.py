@@ -70,19 +70,36 @@ class MovieView(TemplateView):
         result = response.json()
         # Retrieve credits of the movie
         credits_all = result['credits']
-        credits = { 'cast': [], 'directors': [], 'writers': []}
+        credits = { 'cast': [], 'directors': [], 'writers': [], 'top_cast': []}
         # Retrieve directors and writers
         for crew in credits_all['crew']:
             if crew['job'] == 'Director':
                 credits['directors'].append(crew)
             elif crew['department'] == 'Writing':
                 credits['writers'].append(crew)
-        # Retrieve the top 10 casts
+        # Retrieve the top 5 and 10 casts
         for i in range(10):
+            if i >= len(credits_all['cast']):
+                break
+            if i < 5:
+                credits['top_cast'].append(credits_all['cast'][i])
             credits['cast'].append(credits_all['cast'][i])
         # Replace the origin credits to simplified credits
         result['credits'] = credits
         result['release_year'] = result['release_date'].split('-')[0]
+
+        # Rearrange the videos
+        videos = []
+        count = 0
+        videos_num = len(result['videos']['results'])
+        for i in range(videos_num):
+            if count > videos_num:
+                break
+            if count % 3 == 0:
+                videos.append([])
+            videos[count // 3].append(result['videos']['results'][count])
+            count += 1
+        result['videos'] = videos
         return self.render_to_response(result)
 
 def search(request):

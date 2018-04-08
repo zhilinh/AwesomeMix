@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'css-star-rating-1.1.3/dist/css/star-rating.css' %}">
+
     <script src="{% static 'js/movie.js' %}"></script>
 
     <div class="container">
@@ -20,7 +22,7 @@
                 <p>Writer: {% for writer in credits.writers %}{{ writer.name }} / {% endfor %}</p>
                 <p>Cast: {% for actor in credits.cast %}{{ actor.name }} / {% endfor %}</p>
                 <p>Genres: {% for genre in genres %}{{ genre.name }} / {% endfor %}</p>
-                <p>Homepage: <a href="{{ homepage }}">{{ homepage }}</a></p>
+                <p>Homepage: {% if homepage != None %}<a href="{{ homepage }}">{{ homepage }}</a>{% endif %}</p>
                 <p>Region: {% for region in production_countries %}{{ region.name }} / {% endfor %}</p>
                 <p>Language: {{ original_language }}</p>
                 <p>Release Date: {{ release_date }}</p>
@@ -30,23 +32,58 @@
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s1">Description</div><br>
+                <div class="card-title col s2">My Comment</div>
+                <br>
+                <div class="card-content">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-title col s1">Description</div>
+                <br>
                 <div class="card-content">{{ overview }}</div>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s1">Cast</div><br>
-                <div class="card-content"></div>
+                <div class="card-title col s2">Top Cast</div>
+                <br>
+                <div class="card-content center row">
+                    {% for actor in credits.top_cast %}
+                        <div class="col">
+                            {% if actor.profile_path != None %}
+                                <img src="http://image.tmdb.org/t/p/w185/{{ actor.profile_path }}">
+                            {% else %}
+                                <img src="{% static 'cast_profile_holder.png' %}">
+                            {% endif %}
+                            <p>{{ actor.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s1">Videos</div><br>
+                <div class="card-title col s1">Videos</div>
+                <br>
                 <div class="card-content center slider">
                     <ul class="slides transparent">
-                        <li>
-                        </li>
+                        {% for slide in videos %}
+                            <li>
+                                <iframe width="300" height="200" src="https://www.youtube.com/embed/{{ slide.0.key }}">
+                                </iframe>
+                                {% if slide|length >= 2 %}
+                                    <iframe width="300" height="200"
+                                            src="https://www.youtube.com/embed/{{ slide.1.key }}">
+                                    </iframe>
+                                {% endif %}
+                                {% if slide|length >= 3 %}
+                                    <iframe width="300" height="200"
+                                            src="https://www.youtube.com/embed/{{ slide.2.key }}">
+                                    </iframe>
+                                {% endif %}
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>

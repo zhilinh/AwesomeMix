@@ -1,41 +1,17 @@
-// construct the url with parameter values
-var apikey = "{{ api_key }}";
-var baseUrl = "http://data.tmsapi.com/v1.1";
-var showtimesUrl = baseUrl + '/movies/showings';
-var zipCode = "15213";
-var d = new Date();
-var today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+$(document).ready(function(){
+    var elem = document.querySelector('.autocomplete');
+    var instance = M.Autocomplete.init(elem, options);
 
-$(document).ready(function () {
-    // send off the query
-    $.ajax({
-        url: showtimesUrl,
+    $('input.autocomplete').autocomplete({
         data: {
-            startDate: today,
-            zip: zipCode,
-            jsonp: "dataHandler",
-            api_key: apikey
+            "Apple": null,
+            "Microsoft": null,
+            "Google": 'https://placehold.it/250x250'
         },
-        dataType: "jsonp"
     });
 });
 
-// callback to handle the results
-function dataHandler(data) {
-    // $(document.body).append('<p>Found ' + data.length + ' movies showing within 5 miles of ' + zipCode+':</p>');
-    var count = 0;
-    $.each(data, function (index, movie) {
-        // var movieData = '<div class="tile"><img src="http://developer.tmsimg.com/' + movie.preferredImage.uri + '?api_key='+apikey+'"><br/>';
-        var movieData = "<a href='#' class='collection-item'>" + movie.title + "(" + movie.ratings[0].code + ")</a>";
-        $(document.getElementById("now-playing-movies")).append(movieData);
-        if (count < 9) {
-            count++;
-        } else {
-            return false;
-        }
-    });
-}
-
+/*
 window.onload = function () {
     var startPos;
     var geoSuccess = function (position) {
@@ -53,3 +29,4 @@ window.onload = function () {
     };
     navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 };
+*/
