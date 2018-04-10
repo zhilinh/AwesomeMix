@@ -23,6 +23,21 @@ class MainView(TemplateView):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
+class ProfileView(TemplateView):
+    template_name = 'homepage/profile.html'
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if not request.user.is_authenticated():
+            return Http404
+
+        user_profile = request.user.user_profile
+        movie_watchlist = json.loads(user_profile.movie_wish_list)
+        context['movie_watchlist'] = movie_watchlist
+        movie_watched = json.loads(user_profile.movie_watched)
+        context['movie_watched'] = movie_watched
+        return self.render_to_response(context)
+
 @transaction.atomic
 def register(request):
     context = {}
@@ -86,6 +101,3 @@ def confirm_registration(request, username, token):
 
     login(request, user)
     return render(request, 'homepage/confirmed.html', {})
-
-def profile(request):
-    return render(request, 'homepage/profile.html', {})

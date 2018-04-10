@@ -14,7 +14,7 @@
             <div class="col s4">
                 <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}">
             </div>
-            <div class="col s8">
+            <div class="col s7">
                 <h5>{{ title }} ({{ release_year }})</h5>
                 <p>Director: {% for director in credits.directors %}{{ director.name }} / {% endfor %}</p>
                 <p>Writer: {% for writer in credits.writers %}{{ writer.name }} / {% endfor %}</p>
@@ -26,6 +26,9 @@
                 <p>Release Date: {{ release_date }}</p>
                 <p>Duration: {{ runtime }} min</p>
                 <p>IMDB: <a href="http://www.imdb.com/title/{{ imdb_id }}">{{ imdb_id }}</a></p>
+            </div>
+            <div id="add_to_wishlist" class="col s1">
+                <input type="hidden" id="user_wishlist" value={{ user_comment.wishlist }}>
             </div>
         </div>
         <div class="row">

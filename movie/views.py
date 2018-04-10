@@ -106,12 +106,17 @@ class MovieView(TemplateView):
             count += 1
         result['videos'] = videos
 
-        result['user_comment'] = {'rate': 0}
+        result['user_comment'] = {'rate': 0, 'wishlist': True}
         if request.user.is_authenticated():
+            # User wishlist
+            user_profile = request.user.user_profile
+            movie_list = json.loads(user_profile.movie_wish_list)
+            if result['id'] in movie_list:
+                result['user_comment']['wishlist'] = False
+            # User rate
             try:
-                user_comment = MovieComment.objects.get(movie_id=result['id'],
-                                                        user=request.user)
-                result['user_comment'] = {'rate': user_comment.rate}
+                user_comment = MovieComment.objects.get(movie_id=result['id'], user=request.user)
+                result['user_comment']['rate'] = user_comment.rate
             except:
                 pass
         return self.render_to_response(result)
@@ -160,6 +165,32 @@ def rate(request):
     watched_list = json.loads(user_profile.movie_watched)
     watched_list.append(movie.tmdb_id)
     user_profile.movie_watched = json.dumps(watched_list)
+    user_profile.save()
+
+    return HttpResponse(context, content_type='application/json')
+
+@transaction.atomic
+def wishlist_op(request):
+    if request.method != "POST" or 'movieId' not in request.POST:
+        return Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to add it to your wishlist.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    context = {}
+    user_profile = request.user.user_profile
+    try:
+        movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
+    except:
+        movie = Movie(tmdb_id=request.POST['movieId'], all_rates=0)
+        movie.save()
+    movie_list = json.loads(user_profile.movie_wish_list)
+    if int(request.POST['op']) == 1:
+        movie_list.append(movie.tmdb_id)
+    else:
+        movie_list.remove(movie.tmdb_id)
+    user_profile.movie_wish_list = json.dumps(movie_list)
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')

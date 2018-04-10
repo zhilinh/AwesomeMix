@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 
 from . import views
 
@@ -26,7 +27,7 @@ urlpatterns = [
     url(r'^register$', views.register, name='register'),
     url(r'^confirm_registration/(?P<username>[a-zA-Z0-9]+)/(?P<token>[a-z0-9\-]+)$',
         views.confirm_registration, name='confirmed'),
-    url(r'^profile', views.profile, name='profile'),
+    url(r'^profile/(?P<username>[a-zA-Z0-9]+)$', login_required(views.ProfileView.as_view()), name='profile'),
     # Route for built-in authentication with our own custom login page
     url(r'^login$', auth_views.login, {'template_name': 'homepage/login.html'}, name='login'),
     # Route to logout a user and send them back to the login page
