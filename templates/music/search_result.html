@@ -1,0 +1,23 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+{% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% for artist in artists %}
+            {% if artist.image != None %}
+                <div class="row card z-depth-0">
+                    <div class="col s3">
+                        <img src="{{ artist.image }}">
+                    </div>
+                    <div class="col s9">
+                        <p>{{ artist.name }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

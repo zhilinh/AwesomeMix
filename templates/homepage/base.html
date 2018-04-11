@@ -25,7 +25,7 @@
         <a id="logo-container" href="{% url 'homepage:homepage' %}" class="brand-logo">Awesome Mix</a>
         <ul class="right hide-on-med-and-down">
             <li><a href="{% url 'movie:homepage' %}">Movies</a></li>
-            <li><a href="#">Music</a></li>
+            <li><a href="{% url 'music:homepage' %}">Music</a></li>
             {% block user-info %}
             {% endblock %}
         </ul>

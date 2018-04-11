@@ -15,6 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 
+from . import views
+
+app_name = 'music'
 urlpatterns = [
+    url(r'^$', views.MainView.as_view(), name='homepage'),
+    url(r'^search_result', views.search, name='search'),
+    # url(r'^rate', views.rate, name='rate'),
+    # url(r'^wishlist_op', views.wishlist_op, name='wishlist_op'),
+    # url(r'^(?P<movieid>[a-zA-Z0-9]+)$', views.MovieView.as_view(), name='movie')
 
 ]

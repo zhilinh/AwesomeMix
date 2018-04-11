@@ -1,0 +1,24 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+    {% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="card-panel z-depth-0">
+        <div class="container">
+            <div class="input-field">
+                <form action="{% url 'music:search' %}" method="get">
+                    <i class="prefix material-icons">search</i>
+                    <input type="text" class="col s6 autocomplete" name="music" placeholder="Find album">
+                </form>
+            </div>
+            <div id="hot-hits" class="collection with-header">
+                <h5 class="collection-header">Hot Hits</h5>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
