@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'awesomemix.wsgi.application'
 LOGIN_URL = '/homepage/login'
 
 # Default URL to redirect to after a user logs in.
-LOGIN_REDIRECT_URL = '/homepage/profile'
+LOGIN_REDIRECT_URL = '/homepage'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases

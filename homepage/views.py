@@ -11,7 +11,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .forms import RegistrationForm
-from .models import Profile
+from .models import Profile, Movie
 import json
 
 # Create your views here.
@@ -33,9 +33,17 @@ class ProfileView(TemplateView):
 
         user_profile = request.user.user_profile
         movie_watchlist = json.loads(user_profile.movie_wish_list)
-        context['movie_watchlist'] = movie_watchlist
+        context['movie_watchlist'] = []
+        for tmdb_id in movie_watchlist:
+            movie = Movie.objects.get(pk=tmdb_id)
+            context['movie_watchlist'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
+
         movie_watched = json.loads(user_profile.movie_watched)
-        context['movie_watched'] = movie_watched
+        context['movie_watched'] = []
+        for tmdb_id in movie_watched:
+            movie = Movie.objects.get(pk=tmdb_id)
+            context['movie_watched'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
+
         return self.render_to_response(context)
 
 @transaction.atomic

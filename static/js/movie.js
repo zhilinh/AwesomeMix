@@ -49,7 +49,8 @@ function getCSRFToken() {
 }
 
 function addWishlistButton() {
-    if (wishlist) {
+    // True in Python is not true in JavaScript
+    if (wishlist === 'True') {
         $("#add_to_wishlist").append(
             '<a class="btn-floating btn-large waves-effect waves-light" id="wishlist_button" ' +
             'onclick="wishlistOp(1)">' +

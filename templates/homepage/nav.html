@@ -1,4 +1,9 @@
 {% block user-info %}
-<li><a href="{% url 'homepage:login' %}">Login</a></li>
-<li><a href="{% url 'homepage:register' %}">Register</a></li>
+    {% if user.username == "" %}
+        <li><a href="{% url 'homepage:login' %}">Login</a></li>
+        <li><a href="{% url 'homepage:register' %}">Register</a></li>
+    {% else %}
+        <li><a href="/homepage/profile/{{ user.username }}">{{ user.username }}</a></li>
+        <li><a href="{% url 'homepage:logout' %}">Logout</a></li>
+    {% endif %}
 {% endblock %}

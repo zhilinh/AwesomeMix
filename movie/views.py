@@ -5,6 +5,7 @@ from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 import tmdbsimple as tmdb
+import decimal
 import requests
 import json
 import os
@@ -119,6 +120,12 @@ class MovieView(TemplateView):
                 result['user_comment']['rate'] = user_comment.rate
             except:
                 pass
+        if (not Movie.objects.filter(pk=int(result['id'])).exists()):
+            movie = Movie(tmdb_id=int(result['id']),
+                          poster_path=result['poster_path'],
+                          all_rates=0,
+                          rater_num=0)
+            movie.save()
         return self.render_to_response(result)
 
 def search(request):
@@ -145,14 +152,10 @@ def rate(request):
 
     context = {}
     user_profile = request.user.user_profile
-    try:
-        movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
-        movie.all_rates = movie.all_rates + request.POST['rating']
-        movie.rater_num = movie.rater_num + 1
-    except:
-        movie = Movie(tmdb_id=request.POST['movieId'],
-                      all_rates=request.POST['rating'],
-                      rater_num=1)
+
+    movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
+    movie.all_rates = movie.all_rates + decimal.Decimal(request.POST['rating'])
+    movie.rater_num = movie.rater_num + 1
     movie.save()
 
     try:
@@ -162,9 +165,9 @@ def rate(request):
         comment = MovieComment(movie_id=request.POST['movieId'], user=request.user)
     comment.rate = request.POST['rating']
     comment.save()
-    watched_list = json.loads(user_profile.movie_watched)
-    watched_list.append(movie.tmdb_id)
-    user_profile.movie_watched = json.dumps(watched_list)
+    watched_list = set(json.loads(user_profile.movie_watched))
+    watched_list.add(movie.tmdb_id)
+    user_profile.movie_watched = json.dumps(list(watched_list))
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')
@@ -180,17 +183,14 @@ def wishlist_op(request):
 
     context = {}
     user_profile = request.user.user_profile
-    try:
-        movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
-    except:
-        movie = Movie(tmdb_id=request.POST['movieId'], all_rates=0)
-        movie.save()
-    movie_list = json.loads(user_profile.movie_wish_list)
+
+    movie = Movie.objects.get(pk=request.POST['movieId'])
+    movie_list = set(json.loads(user_profile.movie_wish_list))
     if int(request.POST['op']) == 1:
-        movie_list.append(movie.tmdb_id)
+        movie_list.add(movie.tmdb_id)
     else:
         movie_list.remove(movie.tmdb_id)
-    user_profile.movie_wish_list = json.dumps(movie_list)
+    user_profile.movie_wish_list = json.dumps(list(movie_list))
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')

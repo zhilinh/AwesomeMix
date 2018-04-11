@@ -12,9 +12,10 @@ from django.contrib.auth.models import User
 #     known_for_titles = models.CharField(max_length=100, blank=True)
 #
 class Movie(models.Model):
-    tmdb_id = models.IntegerField(default=0)
+    tmdb_id = models.IntegerField(default=0, primary_key=True)
     all_rates = models.DecimalField(max_digits=30, decimal_places=1)
     rater_num = models.IntegerField(default=0)
+    poster_path = models.CharField(max_length=140)
     # imdb_id = models.CharField(max_length=10)
     # directors = models.CharField(max_length=100, blank=True)
     # writers = models.CharField(max_length=100, blank=True)

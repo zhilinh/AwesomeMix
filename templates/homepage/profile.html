@@ -15,16 +15,22 @@
                 <div class="col s8">
                     <div class="card z-depth-0">
                         <div class="card-title"><a>Movie Watchlist</a></div>
-                        <div class="card-content"></div>
-                    </div>
-                    <div class="card z-depth-0">
-                        <div class="card-title">
-                            <a>Album List</a>
+                        <div class="card-content">
+                            {% for movie in movie_watchlist %}
+                                <a href="/movie/{{ movie.id }}">
+                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}">
+                                </a>
+                            {% endfor %}
                         </div>
                     </div>
                     <div class="card z-depth-0">
-                        <div class="card-title">
-                            <a>Book List</a>
+                        <div class="card-title"><a>Movie Watched</a></div>
+                        <div class="card-content">
+                            {% for movie in movie_watched %}
+                                <a href="/movie/{{ movie.id }}">
+                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}">
+                                </a>
+                            {% endfor %}
                         </div>
                     </div>
                     <hr class="mb-4">
