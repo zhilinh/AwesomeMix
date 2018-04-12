@@ -11,7 +11,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .forms import RegistrationForm
-from .models import Profile, Movie
+from .models import Profile, Movie, ProfileForm
 import json
 
 # Create your views here.
@@ -45,6 +45,31 @@ class ProfileView(TemplateView):
             context['movie_watched'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
 
         return self.render_to_response(context)
+
+    @method_decorator(transaction.atomic())
+    def post(self, request, username):
+        try:
+            profile_form = ProfileForm(request.POST, request.FILES)
+            user = User.objects.get(username=username)
+        except:
+            raise Http404
+        if profile_form.is_valid() and request.user.is_authenticated():
+            tmp_user = profile_form.save(commit=False)
+            if user == request.user:
+                if tmp_user.bio != "":
+                    user.user_profile.bio = tmp_user.bio
+                if tmp_user.img != "":
+                    user.user_profile.img = tmp_user.img
+                user.user_profile.save()
+            else:
+                if user not in request.user.user_profile.follower.all():
+                    request.user.user_profile.follower.add(user)
+                else:
+                    request.user.user_profile.follower.remove(user)
+                request.user.user_profile.save()
+            return redirect('/homepage/profile/' + user.username)
+        else:
+            return redirect('/hompage/logout')
 
 @transaction.atomic
 def register(request):

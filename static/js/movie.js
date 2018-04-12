@@ -1,11 +1,12 @@
 let csrftoken = getCSRFToken();
-let movieId, rating, wishlist;
+let movieId, rating, status;
 
 $(document).ready(function () {
     let elem = document.querySelector('.slider');
     movieId = document.getElementById("movie_id").value;
     rating = document.getElementById("prev_rate").value;
-    wishlist = document.getElementById("user_wishlist").value;
+    // Cannot use the same name as id in html!
+    status = document.getElementById("user_wishlist").value === 'True';
 
     let options = {indicators: true, height: 200, interval: 6000000};
     let instance = M.Slider.init(elem, options);
@@ -34,7 +35,7 @@ $(document).ready(function () {
         }
     });
 
-    addWishlistButton()
+    addWishlistButton();
 
 });
 
@@ -50,7 +51,7 @@ function getCSRFToken() {
 
 function addWishlistButton() {
     // True in Python is not true in JavaScript
-    if (wishlist === 'True') {
+    if (status) {
         $("#add_to_wishlist").append(
             '<a class="btn-floating btn-large waves-effect waves-light" id="wishlist_button" ' +
             'onclick="wishlistOp(1)">' +
@@ -80,6 +81,6 @@ function wishlistOp(op) {
         }
     });
     $("#add_to_wishlist").empty();
-    wishlist = !wishlist;
+    status = !status;
     addWishlistButton();
 }

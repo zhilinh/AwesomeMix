@@ -15,11 +15,27 @@
                     <input type="text" class="col s6 autocomplete" name="movie" placeholder="Find movies">
                 </form>
             </div>
+        <!--
             <div id="now-playing-movies" class="collection with-header">
                 <h5 class="collection-header">Now Playing</h5>
                 {% for movie in hits %}
                     <a href='#' class='collection-item'>{{ movie.title }} ({{ movie.ratings.0.code }})</a>
                 {% endfor %}
+            </div>
+        </div>
+        -->
+            <div class="card">
+                <div class="card-title col s1">Now Playing</div>
+                <div class="row card-content">
+                    {% for movie in hits %}
+                        <div class="col s2">
+                            <a href="/movie/{{ movie.id }}">
+                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}">
+                            </a>
+                            <p><a href='/movie/{{ movie.id }}'>{{ movie.title }} ({{ movie.ratings.0.code }})</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

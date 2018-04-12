@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from movie.models import Movie, MovieComment
 from music.models import MusicComment
+from django.forms import ModelForm
 
 # Create your models here.
 
@@ -18,3 +19,8 @@ class Profile(models.Model):
     movie_watched = models.TextField(default='[]')
     music_listened = models.TextField(default='[]')
     book_read = models.TextField(default='[]')
+
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['img', 'bio']

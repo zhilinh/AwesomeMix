@@ -98,5 +98,31 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-title col s4">People also like...</div>
+                <br>
+                <div class="card-content center row">
+                    {% for movie in similar_movies %}
+                        <div class="col s2">
+                            <a href="/movie/{{ movie.id }}">
+                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}">
+                            </a>
+                            <p><a href='/movie/{{ movie.id }}'>{{ movie.title }}</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% if showtimes != None %}
+        <div class="row">
+            <div class="collection with-header">
+                <h5 class="collection-header">Movie Times + Tickets</h5>
+                {% for item in showtimes %}
+                    <a href='{{ item.ticketURI }}' class='collection-item'>{{ item.theatre.name }} {{ item.dateTime }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}
