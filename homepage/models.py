@@ -9,7 +9,7 @@ from django.forms import ModelForm
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user_profile')
     img = models.ImageField(upload_to='media/', blank=True)
-    bio = models.CharField(max_length=140, blank=True)
+    bio = models.TextField(default='')
     follower = models.ManyToManyField(User)
 
     movie_wish_list = models.TextField(default='[]')

@@ -6,25 +6,18 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="card-panel z-depth-0">
-        <div class="container">
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'movie_background.jpg' %}"></div>
+    <div class="container">
+        <div class="card-panel z-depth-0 grey darken-4">
             <div class="input-field">
                 <form action="{% url 'movie:search' %}" method="get">
                     <i class="prefix material-icons">search</i>
                     <input type="text" class="col s6 autocomplete" name="movie" placeholder="Find movies">
                 </form>
             </div>
-        <!--
-            <div id="now-playing-movies" class="collection with-header">
-                <h5 class="collection-header">Now Playing</h5>
-                {% for movie in hits %}
-                    <a href='#' class='collection-item'>{{ movie.title }} ({{ movie.ratings.0.code }})</a>
-                {% endfor %}
-            </div>
-        </div>
-        -->
-            <div class="card">
+
+            <div class="card grey darken-3">
                 <div class="card-title col s1">Now Playing</div>
                 <div class="row card-content">
                     {% for movie in hits %}
@@ -39,5 +32,5 @@
             </div>
         </div>
     </div>
-
+    </div>
 {% endblock %}

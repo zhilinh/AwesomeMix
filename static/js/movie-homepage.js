@@ -1,6 +1,7 @@
 $(document).ready(function(){
-    var elem = document.querySelector('.autocomplete');
-    var instance = M.Autocomplete.init(elem, options);
+    let elem = document.querySelector('.autocomplete');
+    let instance = M.Autocomplete.init(elem, options);
+    $('.parallax').parallax();
 
     $('input.autocomplete').autocomplete({
         data: {

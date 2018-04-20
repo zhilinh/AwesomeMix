@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -30,3 +31,8 @@ class MovieComment(models.Model):
     comment = models.CharField(max_length=140, blank=True)
     likes = models.IntegerField(default=0)
     movie_id = models.IntegerField(default=0)
+
+class MovieCommentForm(ModelForm):
+    class Meta:
+        model = MovieComment
+        fields = ['comment']

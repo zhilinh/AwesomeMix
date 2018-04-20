@@ -27,7 +27,8 @@ urlpatterns = [
     url(r'^register$', views.register, name='register'),
     url(r'^confirm_registration/(?P<username>[a-zA-Z0-9]+)/(?P<token>[a-z0-9\-]+)$',
         views.confirm_registration, name='confirmed'),
-    url(r'^profile/(?P<username>[a-zA-Z0-9]+)$', login_required(views.ProfileView.as_view()), name='profile'),
+    url(r'^profile/(?P<username>[a-zA-Z0-9]+)$', views.ProfileView.as_view(), name='profile'),
+    url(r'^profile/update_bio$', login_required(views.update_bio), name='update_bio'),
     # Route for built-in authentication with our own custom login page
     url(r'^login$', auth_views.login, {'template_name': 'homepage/login.html'}, name='login'),
     # Route to logout a user and send them back to the login page

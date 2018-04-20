@@ -27,11 +27,14 @@ class ProfileView(TemplateView):
     template_name = 'homepage/profile.html'
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        if not request.user.is_authenticated():
-            return Http404
+        try:
+            user = User.objects.get(username=self.kwargs['username'])
+        except:
+            raise Http404
 
-        user_profile = request.user.user_profile
+        context = self.get_context_data(**kwargs)
+
+        user_profile = user.user_profile
         movie_watchlist = json.loads(user_profile.movie_wish_list)
         context['movie_watchlist'] = []
         for tmdb_id in movie_watchlist:
@@ -44,32 +47,10 @@ class ProfileView(TemplateView):
             movie = Movie.objects.get(pk=tmdb_id)
             context['movie_watched'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
 
+        context['user'] = user.username
+        context['current_user'] = request.user.username
+        context['bio'] = user_profile.bio
         return self.render_to_response(context)
-
-    @method_decorator(transaction.atomic())
-    def post(self, request, username):
-        try:
-            profile_form = ProfileForm(request.POST, request.FILES)
-            user = User.objects.get(username=username)
-        except:
-            raise Http404
-        if profile_form.is_valid() and request.user.is_authenticated():
-            tmp_user = profile_form.save(commit=False)
-            if user == request.user:
-                if tmp_user.bio != "":
-                    user.user_profile.bio = tmp_user.bio
-                if tmp_user.img != "":
-                    user.user_profile.img = tmp_user.img
-                user.user_profile.save()
-            else:
-                if user not in request.user.user_profile.follower.all():
-                    request.user.user_profile.follower.add(user)
-                else:
-                    request.user.user_profile.follower.remove(user)
-                request.user.user_profile.save()
-            return redirect('/homepage/profile/' + user.username)
-        else:
-            return redirect('/hompage/logout')
 
 @transaction.atomic
 def register(request):
@@ -134,3 +115,16 @@ def confirm_registration(request, username, token):
 
     login(request, user)
     return render(request, 'homepage/confirmed.html', {})
+
+@transaction.atomic
+def update_bio(request):
+    if not request.user.is_authenticated():
+        raise Http404
+    context = {}
+    user_profile = request.user.user_profile
+    user_profile.bio = request.POST['text']
+    user_profile.save()
+    context['user'] = request.user.username
+    context['current_user'] = request.user.username
+    context['bio'] = user_profile.bio
+    return HttpResponse(json.dumps(context), content_type='application/json')

@@ -39,11 +39,29 @@
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="movie_id" value={{ id }}>
                     <div class="my-rating jq-stars"></div>
+                    <form action="/movie/{{ id }}" method='post'>
                     <div class="input-field">
+                        {% csrf_token %}
                         <label for="movie_comment">Comment</label>
-                        <input id="movie_comment" type="text" class="validate">
+                        <input id="movie_comment" name="comment" type="text" class="validate">
+
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="form-group has-errors text-danger">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% for error in form.non_field_errors %}
+                            <div class="form-group has-errors text-danger">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
                     </div>
-                    <a class="waves-effect waves-light btn" onclick="">Submit</a>
+
+                    <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -118,8 +136,16 @@
         <div class="row">
             <div class="collection with-header">
                 <h5 class="collection-header">Movie Times + Tickets</h5>
-                {% for item in showtimes %}
-                    <a href='{{ item.ticketURI }}' class='collection-item'>{{ item.theatre.name }} {{ item.dateTime }}</a>
+                {% for theatre in showtimes %}
+                    <div class='collection-item'><h6>{{ theatre.0.theatre}}</h6>
+                    {% for item in theatre %}
+                        {% if item.ticketURI != None %}
+                            <a href="{{ item.ticketURI }}" class="btn red">{{ item.dateTime }}</a>
+                        {% else %}
+                            <a class="btn">{{ item.dateTime }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
                 {% endfor %}
             </div>
         </div>

@@ -6,15 +6,30 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="card-panel">
+    <script src="{% static 'js/profile.js' %}"></script>
+    <div class="parallax-container" style="height: 100%">
+        <div class="parallax"><img src="{% static 'profile_background.jpg' %}"></div>
+        <div class="container">
+        <div class="card-panel grey darken-4">
             <div class="row">
                 <div class="col s4">
-                    <img src="{% static 'scotty.jpg' %}" alt="" class="circle responsive-img">
+                    <!-- "p" tag for alignment -->
+                    <p class="center-align"><img src="{% static 'scotty.jpg' %}" alt="" class="circle responsive-img"></p>
+                    <input id="bio_text" type="hidden" value="{{ bio }}">
+                    <div id="bio_div">
+                        <p id="bio_content">{{ bio }}</p>
+                        {% if current_user == user %}
+                            <a id="edit_btn" class="btn" onclick=editBio()>Edit</a>
+                        {% endif %}
+                    </div>
+                    <hr class="mb-4">
+                    {% if current_user != user %}
+                        <p class="center-align"><a class="waves-effect waves-light btn">Follow</a></p>
+                    {% endif %}
                 </div>
                 <div class="col s8">
-                    <div class="card z-depth-0">
-                        <div class="card-title"><a>Movie Watchlist</a></div>
+                    <div class="card z-depth-0 grey darken-3">
+                        <div class="card-title col s4"><a>Movie Watchlist</a></div>
                         <div class="card-content">
                             {% for movie in movie_watchlist %}
                                 <a href="/movie/{{ movie.id }}">
@@ -23,8 +38,9 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="card z-depth-0">
-                        <div class="card-title"><a>Movie Watched</a></div>
+
+                    <div class="card z-depth-0 grey darken-3">
+                        <div class="card-title col s4"><a>Movie Watched</a></div>
                         <div class="card-content">
                             {% for movie in movie_watched %}
                                 <a href="/movie/{{ movie.id }}">
@@ -33,9 +49,10 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <hr class="mb-4">
+
                 </div>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse, Http404
 from django.db import transaction
@@ -12,7 +12,7 @@ import os
 import time
 
 from .forms import MovieSearchForm
-from .models import Movie, MovieComment
+from .models import Movie, MovieComment, MovieCommentForm
 from configparser import ConfigParser
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -109,9 +109,33 @@ class MovieView(TemplateView):
             except:
                 pass
 
+    def get_now_playing(self, result, request):
+        # Get the theaters info for now playing movies
+        showtimes = None
+        zip_code = getZIP(request)
+        if zip_code in NOW_PLAYING_MOVIES:
+            for times in NOW_PLAYING_MOVIES[zip_code]:
+                if times['title'] == result['title']:
+                    showtimes = times['showtimes']
+                    break
+
+        if showtimes != None:
+            theatres = {}
+            for times in showtimes:
+                if times['theatre']['id'] not in theatres:
+                    theatres[times['theatre']['id']] = []
+                info = {'dateTime': times['dateTime'].split('T')[1], 'theatre': times['theatre']['name']}
+                if 'ticketURI' in times:
+                    info['ticketURI'] = times['ticketURI']
+                theatres[times['theatre']['id']].append(info)
+            showtimes = theatres.values()
+        return showtimes
+
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
+        comment_form = MovieCommentForm(self.request.GET or None)
+
         payload = { 'api_key': TMDB_API_KEY, 'language': 'en-US', 'append_to_response': 'credits,videos,similar_movies'}
         url = "https://api.themoviedb.org/3/movie/" + context['movieid']
         response = requests.get(url, params=payload)
@@ -121,15 +145,8 @@ class MovieView(TemplateView):
         result['credits'] = self.get_credits(result)
         result['videos'] = self.get_videos(result)
         result['release_year'] = result['release_date'].split('-')[0]
-
-        # Get the theaters info for now playing movies
-        result['showtimes'] = None
-        zip_code = getZIP(request)
-        if zip_code in NOW_PLAYING_MOVIES:
-            for movie in NOW_PLAYING_MOVIES[zip_code]:
-                if movie['title'] == result['title']:
-                    result['showtimes'] = movie['showtimes']
-                    break
+        result['showtimes'] = self.get_now_playing(result, request)
+        result['comment_form'] = comment_form
 
         similar_movies = []
         for i in range(6):
@@ -146,6 +163,13 @@ class MovieView(TemplateView):
                           rater_num=0)
             movie.save()
         return self.render_to_response(result)
+
+    def post(self, request, movieid):
+        comment_form = MovieCommentForm(request.POST)
+        if not request.user.is_authenticated() or not comment_form.is_valid():
+            raise Http404
+        print(request.POST['comment'])
+        return redirect('/movie/' + movieid)
 
 def search(request):
     form = MovieSearchForm(request.GET)
