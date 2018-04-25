@@ -95,19 +95,20 @@ class MovieView(TemplateView):
             credits['cast'].append(credits_all['cast'][i])
         return credits
 
-    def user_op(self, request, result):
+    def get_user_info(self, request, result):
+        result['wishlist'] = True
         if request.user.is_authenticated():
             # User wishlist
             user_profile = request.user.user_profile
             movie_list = json.loads(user_profile.movie_wish_list)
             if result['id'] in movie_list:
-                result['user_comment']['wishlist'] = False
+                result['wishlist'] = False
             # User rate
             try:
                 user_comment = MovieComment.objects.get(movie_id=result['id'], user=request.user)
-                result['user_comment']['rate'] = user_comment.rate
+                result['user_comment'] = user_comment
             except:
-                pass
+                result['user_comment'] = {'rate': 0}
 
     def get_now_playing(self, result, request):
         # Get the theaters info for now playing movies
@@ -131,6 +132,27 @@ class MovieView(TemplateView):
             showtimes = theatres.values()
         return showtimes
 
+    def get_similar_movies(self, result):
+        similar_movies = []
+        for i in range(6):
+            similar_movies.append(result['similar_movies']['results'][i])
+        return similar_movies
+
+    def get_rate(self, result):
+        try:
+            movie = Movie.objects.get(pk=int(result['id']))
+        except:
+            movie = Movie(tmdb_id=int(result['id']),
+                          poster_path=result['poster_path'],
+                          all_rates=0,
+                          rater_num=0)
+            movie.save()
+        if movie.rater_num == 0:
+            result['avg_rate'] = 0
+        else:
+            result['avg_rate'] = movie.all_rates / movie.rater_num
+        result['rater_num'] = movie.rater_num
+
     @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -147,29 +169,31 @@ class MovieView(TemplateView):
         result['release_year'] = result['release_date'].split('-')[0]
         result['showtimes'] = self.get_now_playing(result, request)
         result['comment_form'] = comment_form
-
-        similar_movies = []
-        for i in range(6):
-            similar_movies.append(result['similar_movies']['results'][i])
-        result['similar_movies'] = similar_movies
-        result['user_comment'] = {'rate': 0, 'wishlist': True}
-        self.user_op(request, result)
-
-        # Save the movie to database
-        if (not Movie.objects.filter(pk=int(result['id'])).exists()):
-            movie = Movie(tmdb_id=int(result['id']),
-                          poster_path=result['poster_path'],
-                          all_rates=0,
-                          rater_num=0)
-            movie.save()
+        result['similar_movies'] = self.get_similar_movies(result)
+        self.get_user_info(request, result)
+        self.get_rate(result)
         return self.render_to_response(result)
 
+    @method_decorator(transaction.atomic)
     def post(self, request, movieid):
         comment_form = MovieCommentForm(request.POST)
-        if not request.user.is_authenticated() or not comment_form.is_valid():
-            raise Http404
-        print(request.POST['comment'])
-        return redirect('/movie/' + movieid)
+        if not request.user.is_authenticated():
+            return redirect('movie:movie', movieid=movieid)
+        if not comment_form.is_valid():
+            return redirect('movie:movie', movieid=movieid)
+
+        user_profile = request.user.user_profile
+        try:
+            comment = MovieComment.objects.get(movie_id=movieid, user=request.user)
+        except:
+            comment = MovieComment(movie_id=movieid, user=request.user)
+        comment.comment = request.POST['comment']
+        comment.save()
+        watched_list = set(json.loads(user_profile.movie_watched))
+        watched_list.add(int(movieid))
+        user_profile.movie_watched = json.dumps(list(watched_list))
+        user_profile.save()
+        return redirect('movie:movie', movieid=movieid)
 
 def search(request):
     form = MovieSearchForm(request.GET)

@@ -28,53 +28,47 @@
                 <p>IMDB: <a href="http://www.imdb.com/title/{{ imdb_id }}">{{ imdb_id }}</a></p>
             </div>
             <div id="add_to_wishlist" class="col s1">
-                <input type="hidden" id="user_wishlist" value={{ user_comment.wishlist }}>
+                <input type="hidden" id="user_wishlist" value={{ wishlist }}>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s2">My Comment</div>
+                <div class="card-title col s4">My Comment</div>
                 <br>
                 <div class="card-content">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="movie_id" value={{ id }}>
-                    <div class="my-rating jq-stars"></div>
+                    <div class="row my-rating jq-stars"></div>
+                    <div class="row">
+                        <p class="black-text">{{ user_comment.comment }}</p>
+                        <p class="right-align grey-text">{{ user_comment.date }}</p>
+                    </div>
                     <form action="/movie/{{ id }}" method='post'>
                     <div class="input-field">
                         {% csrf_token %}
                         <label for="movie_comment">Comment</label>
                         <input id="movie_comment" name="comment" type="text" class="validate">
-
-                        {% for field in form %}
-                            {% for error in field.errors %}
-                                <div class="form-group has-errors text-danger">
-                                    {{ error }}
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-
-                        {% for error in form.non_field_errors %}
-                            <div class="form-group has-errors text-danger">
-                                {{ error }}
-                            </div>
-                        {% endfor %}
+                        {{ error }}
                     </div>
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
+                    {% if user_comment != None %}
+                        <a class="waves-effect waves-light btn" onclick="">Delete</a>
+                    {% endif %}
                     </form>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s1">Description</div>
+                <div class="card-title col s4">Description</div>
                 <br>
                 <div class="card-content">{{ overview }}</div>
             </div>
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s2">Top Cast</div>
+                <div class="card-title col s4">Top Cast</div>
                 <br>
                 <div class="card-content center row">
                     {% for actor in credits.top_cast %}
@@ -92,7 +86,7 @@
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-title col s1">Videos</div>
+                <div class="card-title col s4">Videos</div>
                 <br>
                 <div class="card-content center slider">
                     <ul class="slides transparent">

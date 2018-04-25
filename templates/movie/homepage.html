@@ -19,15 +19,21 @@
 
             <div class="card grey darken-3">
                 <div class="card-title col s1">Now Playing</div>
-                <div class="row card-content">
-                    {% for movie in hits %}
+                <div class="card-content">
+                    <div class="row">
+                        {% for movie in hits %}
                         <div class="col s2">
                             <a href="/movie/{{ movie.id }}">
                                 <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}">
                             </a>
                             <p><a href='/movie/{{ movie.id }}'>{{ movie.title }} ({{ movie.ratings.0.code }})</a></p>
                         </div>
-                    {% endfor %}
+                        {% if forloop.counter|divisibleby:6 %}
+                            </div>
+                            <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
