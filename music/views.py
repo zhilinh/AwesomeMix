@@ -98,9 +98,9 @@ class MusicView(TemplateView):
             comment = MusicComment(music_id=musicid, user=request.user)
         comment.comment = request.POST['comment']
         comment.save()
-        listened_list = set(json.loads(user_profile.music_listened))
-        listened_list.add(musicid)
-        user_profile.music_listened = json.dumps(list(listened_list))
+        playlist = set(json.loads(user_profile.music_played))
+        playlist.add(musicid)
+        user_profile.music_played = json.dumps(list(playlist))
         user_profile.save()
         return redirect('music:music', musicid=musicid)
 
@@ -161,9 +161,9 @@ def rate(request):
         comment = MusicComment(music_id=request.POST['musicId'], user=request.user)
     comment.rate = request.POST['rating']
     comment.save()
-    listened_list = set(json.loads(user_profile.music_listened))
-    listened_list.add(music.spotify_id)
-    user_profile.music_listened = json.dumps(list(listened_list))
+    playlist = set(json.loads(user_profile.music_played))
+    playlist.add(music.spotify_id)
+    user_profile.music_played = json.dumps(list(playlist))
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')

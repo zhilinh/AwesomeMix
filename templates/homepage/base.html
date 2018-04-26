@@ -22,10 +22,12 @@
 <body>
 <nav class="white" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="{% url 'homepage:homepage' %}" class="brand-logo">Awesome Mix</a>
+        <a id="logo-container" href="{% url 'homepage:homepage' %}" class="brand-logo">
+            <img src="{% static 'assets/logos/logo-small.png' %}" height="60">
+        </a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="{% url 'movie:homepage' %}">Movies</a></li>
-            <li><a href="{% url 'music:homepage' %}">Music</a></li>
+            <li><a href="{% url 'movie:homepage' %}" class="nav-text">Movies</a></li>
+            <li><a href="{% url 'music:homepage' %}" class="nav-text">Music</a></li>
             {% block user-info %}
             {% endblock %}
         </ul>

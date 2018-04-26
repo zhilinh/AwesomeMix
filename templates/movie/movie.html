@@ -12,7 +12,8 @@
         <div class="row">
             <p></p>
             <div class="col s4">
-                <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}">
+                <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}"
+                     style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
             </div>
             <div class="col s7">
                 <h5>{{ title }} ({{ release_year }})</h5>
@@ -113,7 +114,8 @@
                     {% for movie in similar_movies %}
                         <div class="col s2">
                             <a href="/movie/{{ movie.id }}">
-                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}">
+                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}"
+                                style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
                             </a>
                             <p><a href='/movie/{{ movie.id }}'>{{ movie.title }}</a></p>
                         </div>

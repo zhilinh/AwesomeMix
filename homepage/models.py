@@ -17,7 +17,7 @@ class Profile(models.Model):
     book_wish_list = models.TextField(default='[]')
 
     movie_watched = models.TextField(default='[]')
-    music_listened = models.TextField(default='[]')
+    music_played = models.TextField(default='[]')
     book_read = models.TextField(default='[]')
 
 class ProfileForm(ModelForm):

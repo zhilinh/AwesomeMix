@@ -1,9 +1,9 @@
 {% block user-info %}
     {% if user.username == "" %}
-        <li><a href="{% url 'homepage:login' %}">Login</a></li>
-        <li><a href="{% url 'homepage:register' %}">Register</a></li>
+        <li><a href="{% url 'homepage:login' %}" class="nav-text">Login</a></li>
+        <li><a href="{% url 'homepage:register' %}" class="nav-text">Register</a></li>
     {% else %}
-        <li><a href="/homepage/profile/{{ user.username }}">{{ user.username }}</a></li>
-        <li><a href="{% url 'homepage:logout' %}">Logout</a></li>
+        <li><a href="/homepage/profile/{{ user.username }}" class="nav-text">{{ user.username }}</a></li>
+        <li><a href="{% url 'homepage:logout' %}" class="nav-text">Logout</a></li>
     {% endif %}
 {% endblock %}

@@ -12,7 +12,7 @@
         <div class="row">
             <p></p>
             <div class="col s4">
-                <img src="{{ images.1.url }}">
+                <img src="{{ images.1.url }}" style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
             </div>
             <div class="col s7">
                 <h5>{{ name }}</h5>
@@ -21,25 +21,36 @@
                 <p>Type: {{ album_type }}</p>
                 <p>Release Date: {{ release_date }}</p>
                 <p>Label: {{ label }}</p>
-                <p>External URLs: <a href="{{ external_urls.spotify }}">Spotify</a></p>
+                <p>External URLs: <a href="{{ external_urls.spotify }}"><img src="{% static 'spotify.png' %}"></a></p>
             </div>
             <div id="add_to_wishlist" class="col s1">
                 <input type="hidden" id="user_wishlist" value={{ wishlist }}>
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s2">My Comment</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">My Comment</h5>
                 <div class="card-content">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="music_id" value={{ id }}>
-                    <div class="my-rating jq-stars"></div>
-                    <div class="input-field">
-                        <label for="music_comment">Comment</label>
-                        <input id="music_comment" type="text" class="validate">
+                    <div class="row my-rating jq-stars"></div>
+                    <div class="row">
+                        <p class="black-text">{{ user_comment.comment }}</p>
+                        <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
-                    <a class="waves-effect waves-light btn" onclick="">Submit</a>
+                    <form action="/music/{{ id }}" method='post'>
+                    <div class="input-field">
+                        {% csrf_token %}
+                        <label for="music_comment">Comment</label>
+                        <input id="music_comment" name="comment" type="text" class="validate">
+                        {{ error }}
+                    </div>
+
+                    <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
+                    {% if user_comment != None %}
+                        <a class="waves-effect waves-light btn" onclick="">Delete</a>
+                    {% endif %}
+                    </form>
                 </div>
             </div>
         </div>
@@ -47,7 +58,11 @@
             <div class="card collection with-header">
                 <h5 class="collection-header">Tracks</h5>
                 {% for track in tracks.items %}
-                <div class="collection-item">{{ track.track_number }}. {{ track.name }}</div>
+                <div class="collection-item" style="height: 100px">
+                    <iframe src="https://open.spotify.com/embed?uri={{ track.uri }}"
+                            height="100%" width="100%" frameborder="0" allowtransparency="true"
+                    ></iframe>
+                </div>
                 {% endfor %}
             </div>
         </div>
