@@ -26,7 +26,7 @@ class Movie(models.Model):
     # imdb_num_votes = models.IntegerField(default=0)
 
 class MovieComment(models.Model):
-    user = models.ForeignKey(User, related_name="comments")
+    user = models.ForeignKey(User, related_name="movie_comments")
     rate = models.DecimalField(max_digits=2, decimal_places=1)
     comment = models.CharField(max_length=140, blank=True)
     date = models.DateTimeField(auto_now_add=True)

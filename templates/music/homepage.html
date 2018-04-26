@@ -15,8 +15,24 @@
                     <input type="text" class="col s6 autocomplete" name="music" placeholder="Find album">
                 </form>
             </div>
-            <div id="hot-hits" class="collection with-header">
-                <h5 class="collection-header">Hot Hits</h5>
+            <div class="card">
+                <h5 class="collection-header">New Releases</h5>
+                <div class="card-content">
+                    <div class="row">
+                        {% for album in albums.items %}
+                        <div class="col s4">
+                            <a href="/music/{{ album.id }}">
+                                <img src="{{ album.images.1.url }}">
+                            </a>
+                            <p><a href='/music/{{ album.id }}'>{{ album.name }}</a></p>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 %}
+                            </div>
+                            <div class="row">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

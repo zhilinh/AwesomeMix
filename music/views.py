@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse, Http404
 from django.db import transaction
@@ -13,7 +13,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 from .forms import MusicSearchForm
-from .models import Music, MusicComment
+from .models import Music, MusicComment, MusicCommentForm
 from configparser import ConfigParser
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,18 +33,137 @@ class MainView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
+        try:
+            results = spotify.new_releases(country='US')
+        except:
+            raise Http404
+        return self.render_to_response(results)
+
+class MusicView(TemplateView):
+    template_name = 'music/music.html'
+
+    def get_user_info(self, request, result):
+        result['wishlist'] = True
+        if request.user.is_authenticated():
+            # User wishlist
+            user_profile = request.user.user_profile
+            music_list = json.loads(user_profile.music_wish_list)
+            if result['id'] in music_list:
+                result['wishlist'] = False
+            # User rate
+            try:
+                user_comment = MusicComment.objects.get(music_id=result['id'], user=request.user)
+                result['user_comment'] = user_comment
+            except:
+                result['user_comment'] = {'rate': 0}
+
+    def get_rate(self, result):
+        try:
+            music = Music.objects.get(pk=result['id'])
+        except:
+            music = Music(spotify_id=result['id'],
+                          cover_path=result['images'],
+                          all_rates=0,
+                          rater_num=0)
+            music.save()
+        if music.rater_num == 0:
+            result['avg_rate'] = 0
+        else:
+            result['avg_rate'] = music.all_rates / music.rater_num
+        result['rater_num'] = music.rater_num
+
+    @method_decorator(ensure_csrf_cookie)
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        try:
+            context = spotify.album(album_id=context['musicid'])
+        except:
+            raise Http404
+        self.get_user_info(request, context)
+        self.get_rate(context)
         return self.render_to_response(context)
+
+    @method_decorator(transaction.atomic)
+    def post(self, request, musicid):
+        comment_form = MusicCommentForm(request.POST)
+        if not request.user.is_authenticated():
+            return redirect('music:music', musicid=musicid)
+        if not comment_form.is_valid():
+            return redirect('music:music', musicid=musicid)
+
+        user_profile = request.user.user_profile
+        try:
+            comment = MusicComment.objects.get(music_id=musicid, user=request.user)
+        except:
+            comment = MusicComment(music_id=musicid, user=request.user)
+        comment.comment = request.POST['comment']
+        comment.save()
+        listened_list = set(json.loads(user_profile.music_listened))
+        listened_list.add(musicid)
+        user_profile.music_listened = json.dumps(list(listened_list))
+        user_profile.save()
+        return redirect('music:music', musicid=musicid)
 
 def search(request):
     context = {}
     form = MusicSearchForm(request.GET)
     if form.is_valid():
-        results = spotify.search(q='artist:' + request.GET['music'], type='artist')
-        items = results['artists']['items']
-        context['artists'] = []
-        for artist in items:
-            if len(artist['images']) > 1 and artist['images'][2]['height'] == 160 and artist['images'][2]['width'] == 160:
-                context['artists'].append({'name': artist['name'], 'image': artist['images'][2]['url']})
-        return render(request, 'music/search_result.html', context)
+        results = spotify.search(q='album:' + request.GET['music'], type='album')
+        return render(request, 'music/search_result.html', results)
     else:
         return Http404
+
+
+@transaction.atomic
+def wishlist_op(request):
+    if request.method != "POST" or 'musicId' not in request.POST:
+        return Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to add it to your wishlist.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    context = {}
+    user_profile = request.user.user_profile
+
+    music = Music.objects.get(pk=request.POST['musicId'])
+    music_list = set(json.loads(user_profile.music_wish_list))
+    if int(request.POST['op']) == 1:
+        music_list.add(music.spotify_id)
+    else:
+        music_list.remove(music.spotify_id)
+    user_profile.music_wish_list = json.dumps(list(music_list))
+    user_profile.save()
+
+    return HttpResponse(context, content_type='application/json')
+
+@transaction.atomic
+def rate(request):
+    if request.method != "POST" or 'musicId' not in request.POST or 'rating' not in request.POST:
+        raise Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to make ratings and comments.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    context = {}
+    user_profile = request.user.user_profile
+
+    music = Music.objects.get(spotify_id=request.POST['musicId'])
+    music.all_rates = music.all_rates + decimal.Decimal(request.POST['rating'])
+    music.rater_num = music.rater_num + 1
+    music.save()
+
+    try:
+        comment = MusicComment.objects.get(music_id=request.POST['musicId'],
+                                           user=request.user)
+    except:
+        comment = MusicComment(music_id=request.POST['musicId'], user=request.user)
+    comment.rate = request.POST['rating']
+    comment.save()
+    listened_list = set(json.loads(user_profile.music_listened))
+    listened_list.add(music.spotify_id)
+    user_profile.music_listened = json.dumps(list(listened_list))
+    user_profile.save()
+
+    return HttpResponse(context, content_type='application/json')

@@ -208,7 +208,7 @@ def search(request):
 @transaction.atomic
 def rate(request):
     if request.method != "POST" or 'movieId' not in request.POST or 'rating' not in request.POST:
-        return Http404
+        raise Http404
     if not request.user.is_authenticated():
         message = 'Please login first to make ratings and comments.'
         json_error = '{ "error": "' + message + '" }'

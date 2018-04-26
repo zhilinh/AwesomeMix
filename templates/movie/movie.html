@@ -32,9 +32,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s4">My Comment</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">My Comment</h5>
                 <div class="card-content">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="movie_id" value={{ id }}>
@@ -60,16 +59,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s4">Description</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">Description</h5>
                 <div class="card-content">{{ overview }}</div>
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s4">Top Cast</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">Top Cast</h5>
                 <div class="card-content center row">
                     {% for actor in credits.top_cast %}
                         <div class="col">
@@ -85,9 +82,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s4">Videos</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">Videos</h5>
                 <div class="card-content center slider">
                     <ul class="slides transparent">
                         {% for slide in videos %}
@@ -111,9 +107,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s4">People also like...</div>
-                <br>
+            <div class="card collection with-header">
+                <h5 class="collection-header">People also like...</h5>
                 <div class="card-content center row">
                     {% for movie in similar_movies %}
                         <div class="col s2">
@@ -128,7 +123,7 @@
         </div>
         {% if showtimes != None %}
         <div class="row">
-            <div class="collection with-header">
+            <div class="card collection with-header">
                 <h5 class="collection-header">Movie Times + Tickets</h5>
                 {% for theatre in showtimes %}
                     <div class='collection-item'><h6>{{ theatre.0.theatre}}</h6>

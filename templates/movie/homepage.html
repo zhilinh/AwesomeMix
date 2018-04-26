@@ -13,12 +13,12 @@
             <div class="input-field">
                 <form action="{% url 'movie:search' %}" method="get">
                     <i class="prefix material-icons">search</i>
-                    <input type="text" class="col s6 autocomplete" name="movie" placeholder="Find movies">
+                    <input type="text" class="col s6 autocomplete" name="movie" placeholder="Find movies" style="color: white">
                 </form>
             </div>
 
             <div class="card grey darken-3">
-                <div class="card-title col s1">Now Playing</div>
+                <h5 class="collection-header">Now Playing</h5>
                 <div class="card-content">
                     <div class="row">
                         {% for movie in hits %}

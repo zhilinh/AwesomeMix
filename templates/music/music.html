@@ -6,29 +6,25 @@
 {% endblock %}
 
 {% block content %}
-    <script src="{% static 'js/movie.js' %}"></script>
+    <script src="{% static 'js/music.js' %}"></script>
 
     <div class="container">
         <div class="row">
             <p></p>
             <div class="col s4">
-                <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}">
+                <img src="{{ images.1.url }}">
             </div>
             <div class="col s7">
-                <h5>{{ title }} ({{ release_year }})</h5>
-                <p>Director: {% for director in credits.directors %}{{ director.name }} / {% endfor %}</p>
-                <p>Writer: {% for writer in credits.writers %}{{ writer.name }} / {% endfor %}</p>
-                <p>Cast: {% for actor in credits.cast %}{{ actor.name }} / {% endfor %}</p>
+                <h5>{{ name }}</h5>
+                <p>Artist: {% for artist in artists %}{{ artist.name }} / {% endfor %}</p>
                 <p>Genres: {% for genre in genres %}{{ genre.name }} / {% endfor %}</p>
-                <p>Homepage: {% if homepage != None %}<a href="{{ homepage }}">{{ homepage }}</a>{% endif %}</p>
-                <p>Region: {% for region in production_countries %}{{ region.name }} / {% endfor %}</p>
-                <p>Language: {{ original_language }}</p>
+                <p>Type: {{ album_type }}</p>
                 <p>Release Date: {{ release_date }}</p>
-                <p>Duration: {{ runtime }} min</p>
-                <p>IMDB: <a href="http://www.imdb.com/title/{{ imdb_id }}">{{ imdb_id }}</a></p>
+                <p>Label: {{ label }}</p>
+                <p>External URLs: <a href="{{ external_urls.spotify }}">Spotify</a></p>
             </div>
             <div id="add_to_wishlist" class="col s1">
-                <input type="hidden" id="user_wishlist" value={{ user_comment.wishlist }}>
+                <input type="hidden" id="user_wishlist" value={{ wishlist }}>
             </div>
         </div>
         <div class="row">
@@ -37,66 +33,24 @@
                 <br>
                 <div class="card-content">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
-                    <input type="hidden" id="movie_id" value={{ id }}>
+                    <input type="hidden" id="music_id" value={{ id }}>
                     <div class="my-rating jq-stars"></div>
                     <div class="input-field">
-                        <label for="movie_comment">Comment</label>
-                        <input id="movie_comment" type="text" class="validate">
+                        <label for="music_comment">Comment</label>
+                        <input id="music_comment" type="text" class="validate">
                     </div>
                     <a class="waves-effect waves-light btn" onclick="">Submit</a>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="card">
-                <div class="card-title col s1">Description</div>
-                <br>
-                <div class="card-content">{{ overview }}</div>
+            <div class="card collection with-header">
+                <h5 class="collection-header">Tracks</h5>
+                {% for track in tracks.items %}
+                <div class="collection-item">{{ track.track_number }}. {{ track.name }}</div>
+                {% endfor %}
             </div>
         </div>
-        <div class="row">
-            <div class="card">
-                <div class="card-title col s2">Top Cast</div>
-                <br>
-                <div class="card-content center row">
-                    {% for actor in credits.top_cast %}
-                        <div class="col">
-                            {% if actor.profile_path != None %}
-                                <img src="http://image.tmdb.org/t/p/w185/{{ actor.profile_path }}">
-                            {% else %}
-                                <img src="{% static 'cast_profile_holder.png' %}">
-                            {% endif %}
-                            <p>{{ actor.name }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="card">
-                <div class="card-title col s1">Videos</div>
-                <br>
-                <div class="card-content center slider">
-                    <ul class="slides transparent">
-                        {% for slide in videos %}
-                            <li>
-                                <iframe width="300" height="200" src="https://www.youtube.com/embed/{{ slide.0.key }}">
-                                </iframe>
-                                {% if slide|length >= 2 %}
-                                    <iframe width="300" height="200"
-                                            src="https://www.youtube.com/embed/{{ slide.1.key }}">
-                                    </iframe>
-                                {% endif %}
-                                {% if slide|length >= 3 %}
-                                    <iframe width="300" height="200"
-                                            src="https://www.youtube.com/embed/{{ slide.2.key }}">
-                                    </iframe>
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+
     </div>
 {% endblock %}
