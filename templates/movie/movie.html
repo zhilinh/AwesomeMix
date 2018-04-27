@@ -39,7 +39,7 @@
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="movie_id" value={{ id }}>
                     <div class="row my-rating jq-stars"></div>
-                    <div class="row">
+                    <div id="my_comment" class="row">
                         <p class="black-text">{{ user_comment.comment }}</p>
                         <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
@@ -53,7 +53,7 @@
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
                     {% if user_comment != None %}
-                        <a class="waves-effect waves-light btn" onclick="">Delete</a>
+                        <a class="waves-effect waves-light btn" id="dlt-cmmnt-btn">Delete</a>
                     {% endif %}
                     </form>
                 </div>
@@ -74,7 +74,7 @@
                             {% if actor.profile_path != None %}
                                 <img src="http://image.tmdb.org/t/p/w185/{{ actor.profile_path }}">
                             {% else %}
-                                <img src="{% static 'cast_profile_holder.png' %}">
+                                <img src="{% static 'assets/cast_profile_holder.png' %}">
                             {% endif %}
                             <p>{{ actor.name }}</p>
                         </div>

@@ -96,3 +96,27 @@ $(window).on('load resize', function() {
     });
   });
 });
+
+function deleteComment() {
+    $.ajax({
+        url: "/music/delete_comment",
+        type: "POST",
+        data: "musicId=" + musicId + "&csrfmiddlewaretoken=" + csrftoken,
+        dataType: "json",
+        success: function (response) {
+            if (typeof response === 'undefined' || 'error' in response) {
+                alert(response.error);
+            } else {
+                let myCmmnt = document.getElementById("my_comment");
+                if (myCmmnt !== null) {
+                    myCmmnt.remove();
+                }
+            }
+        },
+        // IMPORTANT!!
+        error: function(requestObject, error, errorThrown) {
+            alert(error);
+            alert(errorThrown);
+       }
+    });
+}

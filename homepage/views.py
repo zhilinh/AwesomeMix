@@ -4,15 +4,17 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse, Http404
-from django.core import serializers
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .forms import RegistrationForm
-from .models import Profile, Movie, ProfileForm
+from .models import Profile
+from movie.models import Movie, MovieComment
+from music.models import Music, MusicComment
 import json
+import ast
 
 # Create your views here.
 
@@ -26,6 +28,42 @@ class MainView(TemplateView):
 class ProfileView(TemplateView):
     template_name = 'homepage/profile.html'
 
+    def get_movie_watchlist(self, user_profile, context):
+        movie_watchlist = json.loads(user_profile.movie_wish_list)
+        context['movie_watchlist'] = []
+        for tmdb_id in movie_watchlist:
+            movie = Movie.objects.get(pk=tmdb_id)
+            context['movie_watchlist'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
+
+    def get_movie_watched(self, user_profile, context):
+        movie_watched = json.loads(user_profile.movie_watched)
+        context['movie_watched'] = []
+        for tmdb_id in movie_watched:
+            movie = Movie.objects.get(pk=tmdb_id)
+            context['movie_watched'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
+
+    def get_album_playlist(self, user_profile, context):
+        album_playlist = json.loads(user_profile.music_wish_list)
+        context['album_playlist'] = []
+        for spotify_id in album_playlist:
+            album = Music.objects.get(pk=spotify_id)
+            try:
+                cover_path = ast.literal_eval(album.cover_path)[2]['url']
+            except:
+                cover_path = None
+            context['album_playlist'].append({'id': spotify_id, 'poster_path': cover_path})
+
+    def get_album_collection(self, user_profile, context):
+        album_collection = json.loads(user_profile.music_played)
+        context['album_collection'] = []
+        for spotify_id in album_collection:
+            album = Music.objects.get(pk=spotify_id)
+            try:
+                cover_path = ast.literal_eval(album.cover_path)[2]['url']
+            except:
+                cover_path = None
+            context['album_collection'].append({'id': spotify_id, 'poster_path': cover_path})
+
     def get(self, request, *args, **kwargs):
         try:
             user = User.objects.get(username=self.kwargs['username'])
@@ -33,19 +71,12 @@ class ProfileView(TemplateView):
             raise Http404
 
         context = self.get_context_data(**kwargs)
-
         user_profile = user.user_profile
-        movie_watchlist = json.loads(user_profile.movie_wish_list)
-        context['movie_watchlist'] = []
-        for tmdb_id in movie_watchlist:
-            movie = Movie.objects.get(pk=tmdb_id)
-            context['movie_watchlist'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
 
-        movie_watched = json.loads(user_profile.movie_watched)
-        context['movie_watched'] = []
-        for tmdb_id in movie_watched:
-            movie = Movie.objects.get(pk=tmdb_id)
-            context['movie_watched'].append({'id': tmdb_id, 'poster_path': movie.poster_path})
+        self.get_movie_watchlist(user_profile, context)
+        self.get_movie_watched(user_profile, context)
+        self.get_album_playlist(user_profile, context)
+        self.get_album_collection(user_profile, context)
 
         context['user'] = user.username
         context['current_user'] = request.user.username

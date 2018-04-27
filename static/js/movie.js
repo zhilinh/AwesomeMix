@@ -1,8 +1,9 @@
 let csrftoken = getCSRFToken();
-let movieId, rating, status;
+let movieId, rating, status, dltCmmntBtn;
 
 $(document).ready(function () {
     let elem = document.querySelector('.slider');
+    dltCmmntBtn = document.getElementById("dlt-cmmnt-btn");
     movieId = document.getElementById("movie_id").value;
     rating = document.getElementById("prev_rate").value;
     // Cannot use the same name as id in html!
@@ -35,7 +36,9 @@ $(document).ready(function () {
         }
     });
 
+    // Functions will run AUTOMATICALLY with brackets "()"!!
     addWishlistButton();
+    dltCmmntBtn.addEventListener('click', deleteComment);
 
 });
 
@@ -83,4 +86,28 @@ function wishlistOp(op) {
     $("#add_to_wishlist").empty();
     status = !status;
     addWishlistButton();
+}
+
+function deleteComment() {
+    $.ajax({
+        url: "/movie/delete_comment",
+        type: "POST",
+        data: "movieId=" + movieId + "&csrfmiddlewaretoken=" + csrftoken,
+        dataType: "json",
+        success: function (response) {
+            if (typeof response === 'undefined' || 'error' in response) {
+                alert(response.error);
+            } else {
+                let myCmmnt = document.getElementById("my_comment");
+                if (myCmmnt !== null) {
+                    myCmmnt.remove();
+                }
+            }
+        },
+        // IMPORTANT!!
+        error: function(requestObject, error, errorThrown) {
+            alert(error);
+            alert(errorThrown);
+       }
+    });
 }

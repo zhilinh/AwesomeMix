@@ -186,7 +186,7 @@ class MovieView(TemplateView):
         try:
             comment = MovieComment.objects.get(movie_id=movieid, user=request.user)
         except:
-            comment = MovieComment(movie_id=movieid, user=request.user)
+            comment = MovieComment(movie_id=movieid, user=request.user, rate=0)
         comment.comment = request.POST['comment']
         comment.save()
         watched_list = set(json.loads(user_profile.movie_watched))
@@ -258,6 +258,31 @@ def wishlist_op(request):
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')
+
+@transaction.atomic
+def delete_comment(request):
+    if request.method != "POST" or 'movieId' not in request.POST:
+        return Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to modify your comments.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    try:
+        comment = MovieComment.objects.get(movie_id=request.POST['movieId'], user=request.user)
+        comment.delete()
+
+        user_profile = request.user.user_profile
+        watched_list = json.loads(user_profile.movie_watched)
+        # movie_id as integer!
+        watched_list.remove(int(request.POST['movieId']))
+        user_profile.movie_watched = json.dumps(list(watched_list))
+        user_profile.save()
+    except:
+        pass
+    # IMPORTANT: response json format!!
+    return HttpResponse(json.dumps([]), content_type='application/json')
+
 
 def process_request(request):
     try:

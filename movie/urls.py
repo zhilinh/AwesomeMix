@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^search_result', views.search, name='search'),
     url(r'^rate', views.rate, name='rate'),
     url(r'^wishlist_op', views.wishlist_op, name='wishlist_op'),
+    url(r'^delete_comment', views.delete_comment, name='delete_comment'),
     url(r'^(?P<movieid>[a-zA-Z0-9]+)$', views.MovieView.as_view(), name='movie')
 ]

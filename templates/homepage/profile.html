@@ -50,6 +50,31 @@
                         </div>
                     </div>
 
+                    <div class="card z-depth-0 grey darken-3">
+                        <div class="card-title col s4"><a>Album Playlist</a></div>
+                        <div class="card-content">
+                            {% for album in album_playlist %}
+                                <a href="/music/{{ album.id }}">
+                                    {% if album.poster_path != None %}
+                                        <img src="{{ album.poster_path }}">
+                                    {% endif %}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="card z-depth-0 grey darken-3">
+                        <div class="card-title col s4"><a>Album Collection</a></div>
+                        <div class="card-content">
+                            {% for album in album_collection %}
+                                <a href="/music/{{ album.id }}">
+                                    {% if album.poster_path != None %}
+                                        <img src="{{ album.poster_path }}">
+                                    {% endif %}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -167,3 +167,27 @@ def rate(request):
     user_profile.save()
 
     return HttpResponse(context, content_type='application/json')
+
+@transaction.atomic
+def delete_comment(request):
+    if request.method != "POST" or 'musicId' not in request.POST:
+        return Http404
+    if not request.user.is_authenticated():
+        message = 'Please login first to modify your comments.'
+        json_error = '{ "error": "' + message + '" }'
+        return HttpResponse(json_error, content_type='application/json')
+
+    try:
+        comment = MusicComment.objects.get(music_id=request.POST['musicId'], user=request.user)
+        comment.delete()
+
+        user_profile = request.user.user_profile
+        playlist = json.loads(user_profile.music_played)
+        # music_id as string!
+        playlist.remove(request.POST['musicId'])
+        user_profile.music_played = json.dumps(list(playlist))
+        user_profile.save()
+    except:
+        pass
+    # IMPORTANT: response json format!!
+    return HttpResponse(json.dumps([]), content_type='application/json')

@@ -9,12 +9,15 @@
     <div class="container">
         {% for album in albums.items %}
             {% if album.images.1 != None %}
-                <div class="row card z-depth-0">
+                <div class="row card-panel z-depth-0">
                     <div class="col s4">
-                        <img src="{{ album.images.1.url }}">
+                        <a href="/music/{{ album.id }}"><img src="{{ album.images.1.url }}"></a>
                     </div>
                     <div class="col s8">
-                        <p>{{ album.name }} - {{ album.artists.0.name }}</p>
+                        <p><a href="/music/{{ album.id }}">{{ album.name }}</a> - {{ album.artists.0.name }}</p>
+                        <p>{{ album.type }}</p>
+                        <p>{{ album.release_date }}</p>
+                        <p><a href="{{ album.external_urls.spotify }}"><img src="{% static 'assets/spotify.png' %}"></a></p>
                     </div>
                 </div>
             {% endif %}

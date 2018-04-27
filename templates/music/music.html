@@ -21,7 +21,7 @@
                 <p>Type: {{ album_type }}</p>
                 <p>Release Date: {{ release_date }}</p>
                 <p>Label: {{ label }}</p>
-                <p>External URLs: <a href="{{ external_urls.spotify }}"><img src="{% static 'spotify.png' %}"></a></p>
+                <p>External URLs: <a href="{{ external_urls.spotify }}"><img src="{% static 'assets/spotify.png' %}"></a></p>
             </div>
             <div id="add_to_wishlist" class="col s1">
                 <input type="hidden" id="user_wishlist" value={{ wishlist }}>
@@ -48,7 +48,7 @@
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
                     {% if user_comment != None %}
-                        <a class="waves-effect waves-light btn" onclick="">Delete</a>
+                        <a class="waves-effect waves-light btn" onclick="deleteComment()">Delete</a>
                     {% endif %}
                     </form>
                 </div>
@@ -58,10 +58,10 @@
             <div class="card collection with-header">
                 <h5 class="collection-header">Tracks</h5>
                 {% for track in tracks.items %}
-                <div class="collection-item" style="height: 100px">
+                <div class="collection-item" style="height: 100px;">
                     <iframe src="https://open.spotify.com/embed?uri={{ track.uri }}"
-                            height="100%" width="100%" frameborder="0" allowtransparency="true"
-                    ></iframe>
+                            height="100%" width="100%" frameborder="0" allowtransparency="true">
+                    </iframe>
                 </div>
                 {% endfor %}
             </div>
