@@ -1,8 +1,9 @@
 let csrftoken = getCSRFToken();
-let musicId, rating, status;
+let musicId, rating, status, dltCmmntBtn;
 
 $(document).ready(function () {
     // let elem = document.querySelector('.slider');
+    dltCmmntBtn = document.getElementById("dlt-cmmnt-btn");
     musicId = document.getElementById("music_id").value;
     rating = document.getElementById("prev_rate").value;
     // Cannot use the same name as id in html!
@@ -28,7 +29,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (response) {
                     if (typeof response === 'undefined' || 'error' in response){
-                        alert(response.error);
+                        M.toast({html: response.error});
                     }
                 }
             })
@@ -36,6 +37,7 @@ $(document).ready(function () {
     });
 
     addWishlistButton();
+    dltCmmntBtn.addEventListener('click', deleteComment);
 
 });
 
@@ -76,7 +78,7 @@ function wishlistOp(op) {
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
-                alert(response.error);
+                M.toast({html: response.error});
             }
         }
     });
@@ -105,7 +107,7 @@ function deleteComment() {
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
-                alert(response.error);
+                M.toast({html: response.error});
             } else {
                 let myCmmnt = document.getElementById("my_comment");
                 if (myCmmnt !== null) {
@@ -115,8 +117,8 @@ function deleteComment() {
         },
         // IMPORTANT!!
         error: function(requestObject, error, errorThrown) {
-            alert(error);
-            alert(errorThrown);
-       }
+            M.toast({html: error});
+            M.toast({html: errorThrown});
+        }
     });
 }

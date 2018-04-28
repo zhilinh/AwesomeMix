@@ -7,10 +7,11 @@
 
 {% block content %}
     <script src="{% static 'js/movie.js' %}"></script>
-
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
     <div class="container">
+        <div class="card-panel grey darken-4">
         <div class="row">
-            <p></p>
             <div class="col s4">
                 <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}"
                      style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
@@ -32,23 +33,23 @@
                 <input type="hidden" id="user_wishlist" value={{ wishlist }}>
             </div>
         </div>
+        </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">My Comment</h5>
-                <div class="card-content">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">My Comment</h5>
+                <div class="card-content grey darken-4">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="movie_id" value={{ id }}>
                     <div class="row my-rating jq-stars"></div>
                     <div id="my_comment" class="row">
-                        <p class="black-text">{{ user_comment.comment }}</p>
+                        <p class="white-text">{{ user_comment.comment }}</p>
                         <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
                     <form action="/movie/{{ id }}" method='post'>
                     <div class="input-field">
                         {% csrf_token %}
                         <label for="movie_comment">Comment</label>
-                        <input id="movie_comment" name="comment" type="text" class="validate">
-                        {{ error }}
+                        <input id="movie_comment" name="comment" type="text" class="validate" style="color: whitesmoke;">
                     </div>
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
@@ -60,15 +61,15 @@
             </div>
         </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">Description</h5>
-                <div class="card-content">{{ overview }}</div>
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Description</h5>
+                <div class="card-content grey darken-4"><p>{{ overview }}</p></div>
             </div>
         </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">Top Cast</h5>
-                <div class="card-content center row">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Top Cast</h5>
+                <div class="card-content center row grey darken-4">
                     {% for actor in credits.top_cast %}
                         <div class="col">
                             {% if actor.profile_path != None %}
@@ -83,9 +84,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">Videos</h5>
-                <div class="card-content center slider">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Videos</h5>
+                <div class="card-content center slider grey darken-4">
                     <ul class="slides transparent">
                         {% for slide in videos %}
                             <li>
@@ -108,9 +109,9 @@
             </div>
         </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">People also like...</h5>
-                <div class="card-content center row">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">People also like...</h5>
+                <div class="card-content center row grey darken-4">
                     {% for movie in similar_movies %}
                         <div class="col s2">
                             <a href="/movie/{{ movie.id }}">
@@ -125,13 +126,14 @@
         </div>
         {% if showtimes != None %}
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">Movie Times + Tickets</h5>
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Movie Times + Tickets</h5>
                 {% for theatre in showtimes %}
-                    <div class='collection-item'><h6>{{ theatre.0.theatre}}</h6>
+                    <div class='collection-item grey darken-4'><h6>{{ theatre.0.theatre}}</h6>
                     {% for item in theatre %}
                         {% if item.ticketURI != None %}
                             <a href="{{ item.ticketURI }}" class="btn red">{{ item.dateTime }}</a>
+                            {% if forloop.counter|divisibleby:"14"%}<p>{% endif %}
                         {% else %}
                             <a class="btn">{{ item.dateTime }}</a>
                         {% endif %}
@@ -141,5 +143,6 @@
             </div>
         </div>
         {% endif %}
+    </div>
     </div>
 {% endblock %}

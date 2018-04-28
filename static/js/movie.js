@@ -29,7 +29,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (response) {
                     if (typeof response === 'undefined' || 'error' in response){
-                        alert(response.error);
+                        M.toast({html: response.error});
                     }
                 }
             })
@@ -79,7 +79,7 @@ function wishlistOp(op) {
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
-                alert(response.error);
+                M.toast({html: response.error});
             }
         }
     });
@@ -96,7 +96,7 @@ function deleteComment() {
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
-                alert(response.error);
+                M.toast({html: response.error});
             } else {
                 let myCmmnt = document.getElementById("my_comment");
                 if (myCmmnt !== null) {
@@ -106,8 +106,8 @@ function deleteComment() {
         },
         // IMPORTANT!!
         error: function(requestObject, error, errorThrown) {
-            alert(error);
-            alert(errorThrown);
-       }
+            M.toast({html: error});
+            M.toast({html: errorThrown});
+        }
     });
 }

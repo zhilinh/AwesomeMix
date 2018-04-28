@@ -95,7 +95,7 @@ class MusicView(TemplateView):
         try:
             comment = MusicComment.objects.get(music_id=musicid, user=request.user)
         except:
-            comment = MusicComment(music_id=musicid, user=request.user)
+            comment = MusicComment(music_id=musicid, user=request.user, rate=0)
         comment.comment = request.POST['comment']
         comment.save()
         playlist = set(json.loads(user_profile.music_played))

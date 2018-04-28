@@ -7,10 +7,11 @@
 
 {% block content %}
     <script src="{% static 'js/music.js' %}"></script>
-
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
     <div class="container">
+        <div class="card-panel grey darken-4">
         <div class="row">
-            <p></p>
             <div class="col s4">
                 <img src="{{ images.1.url }}" style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
             </div>
@@ -27,14 +28,15 @@
                 <input type="hidden" id="user_wishlist" value={{ wishlist }}>
             </div>
         </div>
+        </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">My Comment</h5>
-                <div class="card-content">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">My Comment</h5>
+                <div class="card-content grey darken-4">
                     <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
                     <input type="hidden" id="music_id" value={{ id }}>
                     <div class="row my-rating jq-stars"></div>
-                    <div class="row">
+                    <div id="my_comment" class="row">
                         <p class="black-text">{{ user_comment.comment }}</p>
                         <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
@@ -48,17 +50,17 @@
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
                     {% if user_comment != None %}
-                        <a class="waves-effect waves-light btn" onclick="deleteComment()">Delete</a>
+                        <a class="waves-effect waves-light btn" id="dlt-cmmnt-btn">Delete</a>
                     {% endif %}
                     </form>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="card collection with-header">
-                <h5 class="collection-header">Tracks</h5>
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Tracks</h5>
                 {% for track in tracks.items %}
-                <div class="collection-item" style="height: 100px;">
+                <div class="collection-item grey darken-4" style="height: 100px; width: 95%;">
                     <iframe src="https://open.spotify.com/embed?uri={{ track.uri }}"
                             height="100%" width="100%" frameborder="0" allowtransparency="true">
                     </iframe>
@@ -66,6 +68,6 @@
                 {% endfor %}
             </div>
         </div>
-
+    </div>
     </div>
 {% endblock %}

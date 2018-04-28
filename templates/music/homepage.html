@@ -6,16 +6,17 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="card-panel z-depth-0">
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
         <div class="container">
+            <div class="card-panel z-depth-0 grey darken-4">
             <div class="input-field">
                 <form action="{% url 'music:search' %}" method="get">
                     <i class="prefix material-icons">search</i>
                     <input type="text" class="col s6 autocomplete" name="music" placeholder="Find album">
                 </form>
             </div>
-            <div class="card">
+            <div class="card grey darken-3">
                 <h5 class="collection-header">New Releases</h5>
                 <div class="card-content">
                     <div class="row">
@@ -36,5 +37,5 @@
             </div>
         </div>
     </div>
-
+    </div>
 {% endblock %}
