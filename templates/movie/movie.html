@@ -16,7 +16,7 @@
                 <img src="https://image.tmdb.org/t/p/w342{{ poster_path }}"
                      style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
             </div>
-            <div class="col s7">
+            <div class="col s6">
                 <h5>{{ title }} ({{ release_year }})</h5>
                 <p>Director: {% for director in credits.directors %}{{ director.name }} / {% endfor %}</p>
                 <p>Writer: {% for writer in credits.writers %}{{ writer.name }} / {% endfor %}</p>
@@ -29,8 +29,12 @@
                 <p>Duration: {{ runtime }} min</p>
                 <p>IMDB: <a href="http://www.imdb.com/title/{{ imdb_id }}">{{ imdb_id }}</a></p>
             </div>
-            <div id="add_to_wishlist" class="col s1">
-                <input type="hidden" id="user_wishlist" value={{ wishlist }}>
+            <div class="col s2">
+                <h4 style="display: inline;">{{ avg_rate }}</h4><p style="display: inline;"> / 10</p>
+                <p>{{ rater_num }}</p>
+                <div id="add_to_wishlist">
+                    <input type="hidden" id="user_wishlist" value={{ wishlist }}>
+                </div>
             </div>
         </div>
         </div>
@@ -45,7 +49,7 @@
                         <p class="white-text">{{ user_comment.comment }}</p>
                         <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
-                    <form action="/movie/{{ id }}" method='post'>
+                    <form action="{% url 'movie:movie' movieid=id %}" method='post'>
                     <div class="input-field">
                         {% csrf_token %}
                         <label for="movie_comment">Comment</label>
@@ -57,6 +61,7 @@
                         <a class="waves-effect waves-light btn" id="dlt-cmmnt-btn">Delete</a>
                     {% endif %}
                     </form>
+                    <a href="{% url 'movie:read_comment' movieid=id %}" style="float: right;">Read more comments</a>
                 </div>
             </div>
         </div>
@@ -114,11 +119,11 @@
                 <div class="card-content center row grey darken-4">
                     {% for movie in similar_movies %}
                         <div class="col s2">
-                            <a href="/movie/{{ movie.id }}">
+                            <a href="{% url 'movie:movie' movieid=movie.id %}">
                                 <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}"
                                 style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
                             </a>
-                            <p><a href='/movie/{{ movie.id }}'>{{ movie.title }}</a></p>
+                            <p><a href='{% url 'movie:movie' movieid=movie.id %}'>{{ movie.title }}</a></p>
                         </div>
                     {% endfor %}
                 </div>

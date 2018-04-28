@@ -24,6 +24,6 @@ urlpatterns = [
     url(r'^rate', views.rate, name='rate'),
     url(r'^wishlist_op', views.wishlist_op, name='wishlist_op'),
     url(r'^delete_comment', views.delete_comment, name='delete_comment'),
-    url(r'^(?P<musicid>[a-zA-Z0-9]+)$', views.MusicView.as_view(), name='music')
-
+    url(r'^(?P<musicid>[a-zA-Z0-9]+)$', views.MusicView.as_view(), name='music'),
+    url(r'^(?P<musicid>[a-zA-Z0-9]+)/comment', views.read_comment, name='read_comment')
 ]

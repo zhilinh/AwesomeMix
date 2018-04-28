@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 import decimal
 import requests
+import ast
 import json
 import os
 import time
@@ -69,7 +70,7 @@ class MusicView(TemplateView):
         if music.rater_num == 0:
             result['avg_rate'] = 0
         else:
-            result['avg_rate'] = music.all_rates / music.rater_num
+            result['avg_rate'] = "%.1f" % (music.all_rates * 2 / music.rater_num)
         result['rater_num'] = music.rater_num
 
     @method_decorator(ensure_csrf_cookie)
@@ -178,7 +179,11 @@ def delete_comment(request):
         return HttpResponse(json_error, content_type='application/json')
 
     try:
+        music = Music.objects.get(pk=request.POST['movieId'])
         comment = MusicComment.objects.get(music_id=request.POST['musicId'], user=request.user)
+        music.rater_num = music.rater_num - 1
+        music.all_rates = music.all_rates - comment.rate
+        music.save()
         comment.delete()
 
         user_profile = request.user.user_profile
@@ -191,3 +196,19 @@ def delete_comment(request):
         pass
     # IMPORTANT: response json format!!
     return HttpResponse(json.dumps([]), content_type='application/json')
+
+def read_comment(request, musicid):
+    context = {}
+    music = Music.objects.get(pk=musicid)
+
+    result = spotify.album(album_id=musicid)
+
+    context['title'] = result['name']
+    context['cover_path'] = ast.literal_eval(music.cover_path)[2]['url']
+    context['release_year'] = result['release_date'].split('-')[0]
+
+    comments = MusicComment.objects.filter(music_id=musicid)
+    context['user_comments'] = comments
+    context['id'] = musicid
+
+    return render(request, 'music/music_comment.html', context)

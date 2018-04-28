@@ -150,7 +150,7 @@ class MovieView(TemplateView):
         if movie.rater_num == 0:
             result['avg_rate'] = 0
         else:
-            result['avg_rate'] = movie.all_rates / movie.rater_num
+            result['avg_rate'] = "%.1f" % (movie.all_rates * 2 / movie.rater_num)
         result['rater_num'] = movie.rater_num
 
     @method_decorator(ensure_csrf_cookie)
@@ -269,8 +269,12 @@ def delete_comment(request):
         return HttpResponse(json_error, content_type='application/json')
 
     try:
+        movie = Movie.objects.get(pk=int(request.POST['movieId']))
         comment = MovieComment.objects.get(movie_id=request.POST['movieId'], user=request.user)
+        movie.rater_num = movie.rater_num - 1
+        movie.all_rates = movie.all_rates - comment.rate
         comment.delete()
+        movie.save()
 
         user_profile = request.user.user_profile
         watched_list = json.loads(user_profile.movie_watched)
@@ -283,6 +287,24 @@ def delete_comment(request):
     # IMPORTANT: response json format!!
     return HttpResponse(json.dumps([]), content_type='application/json')
 
+def read_comment(request, movieid):
+    context = {}
+    movie = Movie.objects.get(pk=int(movieid))
+
+    payload = {'api_key': TMDB_API_KEY, 'language': 'en-US'}
+    url = "https://api.themoviedb.org/3/movie/" + movieid
+    response = requests.get(url, params=payload)
+    result = response.json()
+
+    context['title'] = result['title']
+    context['poster_path'] = movie.poster_path
+    context['release_year'] = result['release_date'].split('-')[0]
+
+    comments = MovieComment.objects.filter(movie_id=movieid)
+    context['user_comments'] = comments
+    context['id'] = movieid
+
+    return render(request, 'movie/movie_comment.html', context)
 
 def process_request(request):
     try:

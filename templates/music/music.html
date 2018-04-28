@@ -15,7 +15,7 @@
             <div class="col s4">
                 <img src="{{ images.1.url }}" style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
             </div>
-            <div class="col s7">
+            <div class="col s6">
                 <h5>{{ name }}</h5>
                 <p>Artist: {% for artist in artists %}{{ artist.name }} / {% endfor %}</p>
                 <p>Genres: {% for genre in genres %}{{ genre.name }} / {% endfor %}</p>
@@ -24,8 +24,12 @@
                 <p>Label: {{ label }}</p>
                 <p>External URLs: <a href="{{ external_urls.spotify }}"><img src="{% static 'assets/spotify.png' %}"></a></p>
             </div>
-            <div id="add_to_wishlist" class="col s1">
-                <input type="hidden" id="user_wishlist" value={{ wishlist }}>
+            <div class="col s2">
+                <h4 style="display: inline;">{{ avg_rate }}</h4><p style="display: inline;"> / 10</p>
+                <p>{{ rater_num }}</p>
+                <div id="add_to_wishlist">
+                    <input type="hidden" id="user_wishlist" value={{ wishlist }}>
+                </div>
             </div>
         </div>
         </div>
@@ -37,15 +41,14 @@
                     <input type="hidden" id="music_id" value={{ id }}>
                     <div class="row my-rating jq-stars"></div>
                     <div id="my_comment" class="row">
-                        <p class="black-text">{{ user_comment.comment }}</p>
+                        <p class="white-text">{{ user_comment.comment }}</p>
                         <p class="right-align grey-text">{{ user_comment.date }}</p>
                     </div>
-                    <form action="/music/{{ id }}" method='post'>
+                    <form action="{% url 'music:music' musicid=id %}" method='post'>
                     <div class="input-field">
                         {% csrf_token %}
                         <label for="music_comment">Comment</label>
-                        <input id="music_comment" name="comment" type="text" class="validate">
-                        {{ error }}
+                        <input id="music_comment" name="comment" type="text" class="validate" style="color: whitesmoke;">
                     </div>
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
@@ -53,6 +56,7 @@
                         <a class="waves-effect waves-light btn" id="dlt-cmmnt-btn">Delete</a>
                     {% endif %}
                     </form>
+                    <a href="{% url 'music:read_comment' musicid=id %}" style="float: right;">Read more comments</a>
                 </div>
             </div>
         </div>
