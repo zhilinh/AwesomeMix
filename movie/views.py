@@ -301,7 +301,7 @@ def read_comment(request, movieid):
     context['poster_path'] = movie.poster_path
     context['release_year'] = result['release_date'].split('-')[0]
 
-    comments = MovieComment.objects.filter(movie_id=movieid)
+    comments = MovieComment.objects.filter(movie_id=movieid).exclude(comment="")
     context['user_comments'] = comments
     context['id'] = movieid
 

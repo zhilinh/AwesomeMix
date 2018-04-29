@@ -229,7 +229,7 @@ def read_comment(request, bookid):
     context['cover_path'] = ast.literal_eval(book.cover_path)
     context['published_year'] = result['volumeInfo']['publishedDate'].split('-')[0]
 
-    comments = BookComment.objects.filter(book_id=bookid)
+    comments = BookComment.objects.filter(book_id=bookid).exclude(comment="")
     context['user_comments'] = comments
     context['id'] = bookid
 

@@ -131,12 +131,6 @@ class ProfileView(TemplateView):
                 if tmp_user.img != "":
                     user.user_profile.img = tmp_user.img
                 user.user_profile.save()
-            else:
-                if user not in request.user.user_profile.follower.all():
-                    request.user.user_profile.follower.add(user)
-                else:
-                    request.user.user_profile.follower.remove(user)
-                request.user.user_profile.save()
             return redirect('/homepage/profile/' + user.username)
         else:
             return redirect('/homepage/logout')

@@ -207,7 +207,7 @@ def read_comment(request, musicid):
     context['cover_path'] = ast.literal_eval(music.cover_path)[2]['url']
     context['release_year'] = result['release_date'].split('-')[0]
 
-    comments = MusicComment.objects.filter(music_id=musicid)
+    comments = MusicComment.objects.filter(music_id=musicid).exclude(comment="")
     context['user_comments'] = comments
     context['id'] = musicid
 

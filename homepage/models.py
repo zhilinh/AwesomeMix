@@ -14,7 +14,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user_profile')
     img = models.ImageField(upload_to=update_filename, blank=True)
     bio = models.TextField(default='')
-    follower = models.ManyToManyField(User)
 
     movie_wish_list = models.TextField(default='[]')
     music_wish_list = models.TextField(default='[]')
