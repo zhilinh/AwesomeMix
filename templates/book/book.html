@@ -7,9 +7,9 @@
 
 {% block content %}
     <script src="{% static 'js/book.js' %}"></script>
-    <script src="//books.google.com/books/previewlib.js"></script>
+    <script src="{% static 'js/previewlib.js' %}"></script>
 
-    <div class="parallax-container" style="height: 100%">
+    <div class="parallax-container" id="page_parallax">
     <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
     <div class="container">
         <div class="card-panel grey darken-4">
@@ -60,7 +60,7 @@
                     <div class="input-field">
                         {% csrf_token %}
                         <label for="book_comment">Comment</label>
-                        <input id="book_comment" name="comment" type="text" class="validate" style="color: whitesmoke;">
+                        <input id="book_comment" name="comment" type="text" class="validate white-text">
                     </div>
 
                     <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.views.generic.base import TemplateView
 from django.http import HttpResponse, Http404
 from django.db import transaction
@@ -93,6 +93,7 @@ class ProfileView(TemplateView):
                 cover_path = None
             context['book_read'].append({'id': google_id, 'poster_path': cover_path})
 
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         try:
             user = User.objects.get(username=self.kwargs['username'])

@@ -6,21 +6,33 @@
 {% endblock %}
 
 {% block content %}
-    <div class="parallax-container" style="height: 100%">
+    <div class="parallax-container" id="page_parallax">
     <div class="parallax"><img src="{% static 'assets/bg/movie_bg_hrztl.jpg' %}"></div>
     <div class="container">
         <div class="card-panel z-depth-0 grey darken-4">
             <div class="input-field">
                 <form action="{% url 'book:search' %}" method="get">
                     <i class="prefix material-icons">search</i>
-                    <input type="text" class="col s6 autocomplete" name="book" placeholder="Find books" style="color: whitesmoke;">
+                    <input type="text" class="col s6 white-text" name="book" placeholder="Find books">
                 </form>
             </div>
 
             <div class="card grey darken-3">
-                <h5 class="collection-header">Now Published</h5>
+                <h5 class="collection-header">New York Times Best Sellers</h5>
                 <div class="card-content">
                     <div class="row">
+                        {% for book in best_sellers %}
+                        <div class="col s2">
+                            <a href="{% url 'book:book' bookid=book.id %}">
+                                <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" class="hoverable">
+                            </a>
+                            <p><a href='{% url 'book:book' bookid=book.id %}'>{{ book.volumeInfo.title }}</a></p>
+                        </div>
+                        {% if forloop.counter|divisibleby:6 %}
+                            </div>
+                            <div class="row">
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>

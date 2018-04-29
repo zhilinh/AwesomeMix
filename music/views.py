@@ -5,11 +5,9 @@ from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 import decimal
-import requests
 import ast
 import json
 import os
-import time
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 

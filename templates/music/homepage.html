@@ -6,14 +6,14 @@
 {% endblock %}
 
 {% block content %}
-    <div class="parallax-container" style="height: 100%">
+    <div class="parallax-container" id="page_parallax">
     <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
         <div class="container">
             <div class="card-panel z-depth-0 grey darken-4">
             <div class="input-field">
                 <form action="{% url 'music:search' %}" method="get">
                     <i class="prefix material-icons">search</i>
-                    <input type="text" class="col s6 autocomplete" name="music" placeholder="Find album" style="color: whitesmoke;">
+                    <input type="text" class="col s6 white-text" name="music" placeholder="Find album">
                 </form>
             </div>
             <div class="card grey darken-2">

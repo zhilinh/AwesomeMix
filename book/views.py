@@ -9,12 +9,18 @@ import requests
 import ast
 import json
 import os
-import time
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 
 from .forms import BookSearchForm
 from .models import Book, BookComment, BookCommentForm
+from configparser import ConfigParser
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+config = ConfigParser()
+config.read(os.path.join(BASE_DIR, 'config.ini'))
+
+NYT_API_KEY = config.get("New_York_Times", "NYT_API_KEY")
+GOOGLE_API_KEY = config.get("Google", "GOOGLE_API_KEY")
+
 
 # Create your views here.
 
@@ -24,6 +30,24 @@ class MainView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         search_form = BookSearchForm(self.request.GET or None)
+
+        payload = {'list': 'combined-print-and-e-book-fiction', 'api-key': NYT_API_KEY}
+        url = "https://api.nytimes.com/svc/books/v3/lists.json"
+        google_url = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
+        response = requests.get(url, params=payload)
+        results = response.json()['results']
+        context['best_sellers'] = []
+
+        for book in results:
+            payload = {'key': GOOGLE_API_KEY}
+            url = google_url + book['book_details'][0]['primary_isbn13']
+            response = requests.get(url, params=payload).json()
+            if response['totalItems'] != 0:
+                result = response['items'][0]
+            # else:
+            #     print(book['book_details'][0])
+                context['best_sellers'].append(result)
+
         context['search_form'] = search_form
         return self.render_to_response(context)
 
@@ -65,8 +89,9 @@ class BookView(TemplateView):
         context = self.get_context_data(**kwargs)
         bookid = context['bookid']
 
+        payload = {'key': GOOGLE_API_KEY}
         url = "https://www.googleapis.com/books/v1/volumes/" + bookid
-        response = requests.get(url)
+        response = requests.get(url, params=payload)
         context = response.json()
         context['id'] = bookid
 
@@ -99,9 +124,10 @@ def search(request):
     context = {}
     form = BookSearchForm(request.GET)
     if form.is_valid():
+        payload = {'key': GOOGLE_API_KEY}
         url = "https://www.googleapis.com/books/v1/volumes?q=" + request.GET['book']
         # payload = {'intitle': '', 'inauthor': '', 'inpublisher': '', 'subject': '', 'isbn': '', 'lccn': '', 'oclc': ''}
-        response = requests.get(url)
+        response = requests.get(url, params=payload)
         results = response.json()
         return render(request, 'book/search_result.html', results)
     else:
@@ -194,8 +220,9 @@ def read_comment(request, bookid):
     context = {}
     book = Book.objects.get(pk=bookid)
 
+    payload = {'key': GOOGLE_API_KEY}
     url = "https://www.googleapis.com/books/v1/volumes/" + bookid
-    response = requests.get(url)
+    response = requests.get(url, params=payload)
     result = response.json()
 
     context['title'] = result['volumeInfo']['title']

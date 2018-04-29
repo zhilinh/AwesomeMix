@@ -2,8 +2,13 @@
 {% load staticfiles %}
 
 {% block content %}
+    <div id="page_parallax" class="parallax-container">
+    <div class="parallax"><img src="{% static 'assets/bg/item_bg_hrztl.jpg' %}"></div>
     <div class="container">
+        <div class="card-panel grey darken-4">
         <h4 class="mb-3">Thank you for confirmation</h4>
         <p>Now you can start exploring <a href="{% url 'homepage:homepage' %}">Awesome Mix</a>.</p>
+        </div>
+    </div>
     </div>
 {% endblock %}

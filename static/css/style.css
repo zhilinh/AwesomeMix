@@ -59,3 +59,8 @@ footer.page-footer {
 .nav-text {
   color: #0D47A1;
 }
+
+#page_parallax {
+  min-height: 700px;
+  height: 100%;
+}
