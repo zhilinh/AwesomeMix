@@ -33,4 +33,4 @@ urlpatterns = [
     url(r'^login$', auth_views.login, {'template_name': 'homepage/login.html'}, name='login'),
     # Route to logout a user and send them back to the login page
     url(r'^logout$', auth_views.logout_then_login, name='logout'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

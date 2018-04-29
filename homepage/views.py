@@ -10,7 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .forms import RegistrationForm
-from .models import Profile
+from .models import Profile, ImageForm, BioForm
 from movie.models import Movie, MovieComment
 from music.models import Music, MusicComment
 from book.models import Book, BookComment
@@ -101,6 +101,7 @@ class ProfileView(TemplateView):
 
         context = self.get_context_data(**kwargs)
         user_profile = user.user_profile
+        image_form = ImageForm(self.request.GET or None)
 
         self.get_movie_watchlist(user_profile, context)
         self.get_movie_watched(user_profile, context)
@@ -112,7 +113,32 @@ class ProfileView(TemplateView):
         context['user'] = user.username
         context['current_user'] = request.user.username
         context['bio'] = user_profile.bio
+        context['img'] = user_profile.img
+        context['image_form'] = image_form
         return self.render_to_response(context)
+
+    @method_decorator(transaction.atomic)
+    def post(self, request, username):
+        try:
+            image_form = ImageForm(request.POST, request.FILES)
+            user = User.objects.get(username=username)
+        except:
+            raise Http404
+        if image_form.is_valid() and request.user.is_authenticated():
+            tmp_user = image_form.save(commit=False)
+            if user == request.user:
+                if tmp_user.img != "":
+                    user.user_profile.img = tmp_user.img
+                user.user_profile.save()
+            else:
+                if user not in request.user.user_profile.follower.all():
+                    request.user.user_profile.follower.add(user)
+                else:
+                    request.user.user_profile.follower.remove(user)
+                request.user.user_profile.save()
+            return redirect('/homepage/profile/' + user.username)
+        else:
+            return redirect('/homepage/logout')
 
 @transaction.atomic
 def register(request):

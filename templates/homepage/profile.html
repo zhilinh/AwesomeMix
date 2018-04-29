@@ -14,7 +14,19 @@
             <div class="row">
                 <div class="col s4">
                     <!-- "p" tag for alignment -->
-                    <p class="center-align"><img src="{% static 'assets/scotty.jpg' %}" alt="" class="circle responsive-img"></p>
+                    <form enctype="multipart/form-data" action="{% url 'homepage:profile' username=user %}" method="post">
+                    {% csrf_token %}
+                    <div class="file-field" style="height: 250px; width: 250px;">
+                        {% if img == "" %}
+                        <img src="{% static 'assets/scotty.jpg' %}" alt="" class="circle responsive-img hoverable">
+                        {% else %}
+                        <img src="{{ img }}" alt="" class="circle responsive-img hoverable">
+                        {% endif %}
+                        {% if current_user == user %}
+                        <input type="file" name="img" accept="image/*" onchange="form.submit()"/>
+                        {% endif %}
+                    </div>
+                    </form>
                     <input id="bio_text" type="hidden" value="{{ bio }}">
                     <div id="bio_div">
                         <p id="bio_content">{{ bio }}</p>
@@ -33,7 +45,7 @@
                         <div class="card-content">
                             {% for movie in movie_watchlist %}
                                 <a href="{% url 'movie:movie' movieid=movie.id %}">
-                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}">
+                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}" class="hoverable">
                                 </a>
                             {% endfor %}
                         </div>
@@ -44,7 +56,7 @@
                         <div class="card-content">
                             {% for movie in movie_watched %}
                                 <a href="{% url 'movie:movie' movieid=movie.id %}">
-                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}">
+                                <img src="http://image.tmdb.org/t/p/w92/{{ movie.poster_path }}" class="hoverable">
                                 </a>
                             {% endfor %}
                         </div>
@@ -56,7 +68,7 @@
                             {% for album in album_playlist %}
                                 <a href="{% url 'music:music' musicid=album.id %}">
                                     {% if album.poster_path != None %}
-                                        <img src="{{ album.poster_path }}">
+                                        <img src="{{ album.poster_path }}" class="hoverable">
                                     {% endif %}
                                 </a>
                             {% endfor %}
@@ -69,7 +81,7 @@
                             {% for album in album_collection %}
                                 <a href="{% url 'music:music' musicid=album.id %}">
                                     {% if album.poster_path != None %}
-                                        <img src="{{ album.poster_path }}">
+                                        <img src="{{ album.poster_path }}" class="hoverable">
                                     {% endif %}
                                 </a>
                             {% endfor %}
@@ -82,7 +94,7 @@
                             {% for book in reading_list %}
                                 <a href="{% url 'book:book' bookid=book.id %}">
                                     {% if book.poster_path != None %}
-                                        <img src="{{ book.poster_path }}" width="92" height="138">
+                                        <img src="{{ book.poster_path }}" width="92" height="138" class="hoverable">
                                     {% endif %}
                                 </a>
                             {% endfor %}
@@ -95,7 +107,7 @@
                             {% for book in book_read %}
                                 <a href="{% url 'book:book' bookid=book.id %}">
                                     {% if book.poster_path != None %}
-                                        <img src="{{ book.poster_path }}" width="92" height="138">
+                                        <img src="{{ book.poster_path }}" width="92" height="138" class="hoverable">
                                     {% endif %}
                                 </a>
                             {% endfor %}

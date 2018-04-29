@@ -23,10 +23,10 @@
                     <div class="row">
                         {% for movie in hits %}
                         <div class="col s2">
-                            <a href="/movie/{{ movie.id }}">
-                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}">
+                            <a href="{% url 'movie:movie' movieid=movie.id %}">
+                                <img src="https://image.tmdb.org/t/p/w154{{ movie.poster_path }}" class="hoverable">
                             </a>
-                            <p><a href='/movie/{{ movie.id }}'>{{ movie.title }} ({{ movie.ratings.0.code }})</a></p>
+                            <p><a href='{% url 'movie:movie' movieid=movie.id %}'>{{ movie.title }} ({{ movie.ratings.0.code }})</a></p>
                         </div>
                         {% if forloop.counter|divisibleby:6 %}
                             </div>

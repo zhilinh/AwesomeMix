@@ -16,16 +16,16 @@
                     <input type="text" class="col s6 autocomplete" name="music" placeholder="Find album" style="color: whitesmoke;">
                 </form>
             </div>
-            <div class="card grey darken-3">
+            <div class="card grey darken-2">
                 <h5 class="collection-header">New Releases</h5>
                 <div class="card-content">
                     <div class="row">
                         {% for album in albums.items %}
                         <div class="col s4">
-                            <a href="/music/{{ album.id }}">
-                                <img src="{{ album.images.1.url }}">
+                            <a href="{% url 'music:music' musicid=album.id %}">
+                                <img src="{{ album.images.1.url }}" class="hoverable">
                             </a>
-                            <p><a href='/music/{{ album.id }}'>{{ album.name }}</a></p>
+                            <p><a href='{% url 'music:music' musicid=album.id %}'>{{ album.name }}</a></p>
                         </div>
                         {% if forloop.counter|divisibleby:3 %}
                             </div>
