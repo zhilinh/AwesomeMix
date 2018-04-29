@@ -22,7 +22,7 @@ function editBio() {
 
     bio.empty();
     bio.append('<div id=\"bio_div\" class=\"input-field\">' +
-        '<textarea id="bio_content" class="materialize-textarea" style="color: whitesmoke;"></textarea>' +
+        '<textarea id="bio_content" class="materialize-textarea white-text"></textarea>' +
         '<label class="active" for=\"textarea1\">Bio</label>' +
         '</div>');
     // Add quote marks!! Otherwise it might be considered as variables.

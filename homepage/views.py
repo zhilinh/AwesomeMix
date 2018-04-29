@@ -10,7 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .forms import RegistrationForm
-from .models import Profile, ImageForm, BioForm
+from .models import Profile, ImageForm
 from movie.models import Movie, MovieComment
 from music.models import Music, MusicComment
 from book.models import Book, BookComment
@@ -207,8 +207,9 @@ def confirm_registration(request, username, token):
 
 @transaction.atomic
 def update_bio(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or request.method != "POST" or "text" not in request.POST:
         raise Http404
+
     context = {}
     user_profile = request.user.user_profile
     user_profile.bio = request.POST['text']

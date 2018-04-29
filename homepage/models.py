@@ -28,8 +28,3 @@ class ImageForm(ModelForm):
     class Meta:
         model = Profile
         fields = ['img']
-
-class BioForm(ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['bio']
