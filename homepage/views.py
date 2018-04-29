@@ -70,9 +70,12 @@ class ProfileView(TemplateView):
         context['reading_list'] = []
         for google_id in reading_list:
             book = Book.objects.get(pk=google_id)
-            try:
-                cover_path = ast.literal_eval(book.cover_path)['volumeInfo']['imageLinks']['smallThumbnail']
-            except:
+            images = ast.literal_eval(book.cover_path)
+            if 'smallThumbnail' in images:
+                cover_path = images['smallThumbnail']
+            elif 'thumbnail' in images:
+                cover_path = images['thumbnail']
+            else:
                 cover_path = None
             context['reading_list'].append({'id': google_id, 'poster_path': cover_path})
 
@@ -81,9 +84,12 @@ class ProfileView(TemplateView):
         context['book_read'] = []
         for google_id in reading_list:
             book = Book.objects.get(pk=google_id)
-            try:
-                cover_path = ast.literal_eval(book.cover_path)['volumeInfo']['imageLinks']['smallThumbnail']
-            except:
+            images = ast.literal_eval(book.cover_path)
+            if 'smallThumbnail' in images:
+                cover_path = images['smallThumbnail']
+            elif 'thumbnail' in images:
+                cover_path = images['thumbnail']
+            else:
                 cover_path = None
             context['book_read'].append({'id': google_id, 'poster_path': cover_path})
 

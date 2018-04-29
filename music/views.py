@@ -151,9 +151,6 @@ def rate(request):
     context = {}
     user_profile = request.user.user_profile
 
-
-
-
     try:
         comment = MusicComment.objects.get(music_id=request.POST['musicId'],
                                            user=request.user)
@@ -184,7 +181,7 @@ def delete_comment(request):
         return HttpResponse(json_error, content_type='application/json')
 
     try:
-        music = Music.objects.get(pk=request.POST['movieId'])
+        music = Music.objects.get(pk=request.POST['musicId'])
         comment = MusicComment.objects.get(music_id=request.POST['musicId'], user=request.user)
         music.rater_num = music.rater_num - 1
         music.all_rates = music.all_rates - comment.rate

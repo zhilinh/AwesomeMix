@@ -7,7 +7,7 @@
 
 {% block content %}
     <script src="{% static 'js/profile.js' %}"></script>
-    <div class="parallax-container" style="height: 800px">
+    <div class="parallax-container" style="height: 100%">
         <div class="parallax"><img src="{% static 'assets/bg/profile_background.jpg' %}"></div>
         <div class="container">
         <div class="card-panel grey darken-4">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="col s8">
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Movie Watchlist</a></div>
+                        <div class="card-title col s4">Movie Watchlist</div>
                         <div class="card-content">
                             {% for movie in movie_watchlist %}
                                 <a href="{% url 'movie:movie' movieid=movie.id %}">
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Movie Watched</a></div>
+                        <div class="card-title col s4">Movie Watched</div>
                         <div class="card-content">
                             {% for movie in movie_watched %}
                                 <a href="{% url 'movie:movie' movieid=movie.id %}">
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Album Playlist</a></div>
+                        <div class="card-title col s4">Album Playlist</div>
                         <div class="card-content">
                             {% for album in album_playlist %}
                                 <a href="{% url 'music:music' musicid=album.id %}">
@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Album Collection</a></div>
+                        <div class="card-title col s4">Album Collection</div>
                         <div class="card-content">
                             {% for album in album_collection %}
                                 <a href="{% url 'music:music' musicid=album.id %}">
@@ -77,12 +77,12 @@
                     </div>
 
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Reading List</a></div>
+                        <div class="card-title col s4">Reading List</div>
                         <div class="card-content">
                             {% for book in reading_list %}
                                 <a href="{% url 'book:book' bookid=book.id %}">
                                     {% if book.poster_path != None %}
-                                        <img src="{{ book.poster_path }}">
+                                        <img src="{{ book.poster_path }}" width="92" height="138">
                                     {% endif %}
                                 </a>
                             {% endfor %}
@@ -90,12 +90,12 @@
                     </div>
 
                     <div class="card z-depth-0 grey darken-3">
-                        <div class="card-title col s4"><a>Book Read</a></div>
+                        <div class="card-title col s4">Book Read</div>
                         <div class="card-content">
                             {% for book in book_read %}
                                 <a href="{% url 'book:book' bookid=book.id %}">
                                     {% if book.poster_path != None %}
-                                        <img src="{{ book.poster_path }}">
+                                        <img src="{{ book.poster_path }}" width="92" height="138">
                                     {% endif %}
                                 </a>
                             {% endfor %}

@@ -100,6 +100,7 @@ function deleteComment() {
                 let myCmmnt = document.getElementById("my_comment");
                 if (myCmmnt !== null) {
                     myCmmnt.remove();
+                    M.toast({html: "Comment deleted."});
                 }
             }
         },

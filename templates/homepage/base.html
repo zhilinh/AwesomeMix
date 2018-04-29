@@ -4,6 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="Referrer" content="http://example.com/comic/" />
     <title>Awesome Mix</title>
 
     <!-- CSS  -->
@@ -28,6 +29,7 @@
         <ul class="right hide-on-med-and-down">
             <li><a href="{% url 'movie:homepage' %}" class="nav-text">Movies</a></li>
             <li><a href="{% url 'music:homepage' %}" class="nav-text">Music</a></li>
+            <li><a href="{% url 'book:homepage' %}" class="nav-text">Book</a></li>
             {% block user-info %}
             {% endblock %}
         </ul>

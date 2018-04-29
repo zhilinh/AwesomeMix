@@ -217,9 +217,6 @@ def rate(request):
     context = {}
     user_profile = request.user.user_profile
 
-
-
-
     try:
         comment = MovieComment.objects.get(movie_id=request.POST['movieId'],
                                            user=request.user)
