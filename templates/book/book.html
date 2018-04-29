@@ -1,0 +1,98 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+    {% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <script src="{% static 'js/book.js' %}"></script>
+    <script src="//books.google.com/books/previewlib.js"></script>
+
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
+    <div class="container">
+        <div class="card-panel grey darken-4">
+        <div class="row">
+            <div class="col s4">
+                {% if volumeInfo.imageLinks.small != None %}
+                    <img src="{{ volumeInfo.imageLinks.small }}" style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
+                {% else %}
+                    <img src="{{ volumeInfo.imageLinks.thumbnail }}" style="max-width: 100%;max-height: 100%;width: auto;height: auto;">
+                {% endif %}
+            </div>
+            <div class="col s6">
+                <h5>{{ volumeInfo.title }}</h5>
+                <p>Author: {% for author in volumeInfo.authors %}{{ author }} / {% endfor %}</p>
+                <p>Publisher: {{ volumeInfo.publisher }}</p>
+                <p>Published Date: {{ volumeInfo.publishedDate }}</p>
+                <p>Page Count: {{ volumeInfo.pageCount }}</p>
+                <p>Print Type: {{ volumeInfo.printType }}</p>
+                <p>Categories: {% for category in volumeInfo.categories %}{{ category }} / {% endfor %}</p>
+                <p>Language: {{ volumeInfo.language }}</p>
+                <p>ISBN: {% for isbn in volumeInfo.industryIdentifiers %}{{ isbn.identifier }} / {% endfor %}</p>
+            </div>
+            <div class="col s2">
+                {% if rater_num > 0 %}
+                    <h4 style="display: inline;">{{ avg_rate }}</h4><p style="display: inline;"> / 10</p>
+                    <p>{{ rater_num }}</p>
+                {% else %}
+                    <p>Needs More Ratings</p>
+                {% endif %}
+                <div id="add_to_wishlist">
+                    <input type="hidden" id="user_wishlist" value={{ wishlist }}>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="row">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">My Comment</h5>
+                <div class="card-content grey darken-4">
+                    <input type="hidden" id="prev_rate" value={{ user_comment.rate }}>
+                    <input type="hidden" id="book_id" value={{ id }}>
+                    <div class="row my-rating jq-stars"></div>
+                    <div id="my_comment" class="row">
+                        <p class="white-text">{{ user_comment.comment }}</p>
+                        <p class="right-align grey-text">{{ user_comment.date }}</p>
+                    </div>
+                    <form action="{% url 'book:book' bookid=id %}" method='post'>
+                    <div class="input-field">
+                        {% csrf_token %}
+                        <label for="book_comment">Comment</label>
+                        <input id="book_comment" name="comment" type="text" class="validate" style="color: whitesmoke;">
+                    </div>
+
+                    <button class="waves-effect waves-light btn" type="submit" name="action">Submit</button>
+                    {% if user_comment != None %}
+                        <a class="waves-effect waves-light btn" id="dlt-cmmnt-btn">Delete</a>
+                    {% endif %}
+                    </form>
+                    <a href="{% url 'book:read_comment' bookid=id %}" style="float: right;">Read more comments</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Description</h5>
+                <div id="book_description" class="card-content grey darken-4"><p>{{ volumeInfo.description }}</p></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card collection with-header grey darken-4">
+                <h5 class="collection-header grey darken-4">Preview</h5>
+                <div id="book_previewer" class="card-content grey darken-4">
+                    <input type="hidden" id="preview_isbn" value={{ volumeInfo.industryIdentifiers.0.identifier }}>
+                    <script>GBS_setLanguage('en');</script>
+                    <script>
+                        const isbn = "ISBN:" + document.getElementById("preview_isbn").value;
+                        const width = document.getElementById("book_previewer").offsetWidth - 50;
+                        const height = 500;
+                        GBS_insertEmbeddedViewer(isbn, width, height);
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

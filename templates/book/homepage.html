@@ -1,0 +1,30 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+    {% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/movie_bg_hrztl.jpg' %}"></div>
+    <div class="container">
+        <div class="card-panel z-depth-0 grey darken-4">
+            <div class="input-field">
+                <form action="{% url 'book:search' %}" method="get">
+                    <i class="prefix material-icons">search</i>
+                    <input type="text" class="col s6 autocomplete" name="book" placeholder="Find books" style="color: whitesmoke;">
+                </form>
+            </div>
+
+            <div class="card grey darken-3">
+                <h5 class="collection-header">Now Published</h5>
+                <div class="card-content">
+                    <div class="row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

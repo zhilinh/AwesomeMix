@@ -1,10 +1,10 @@
 let csrftoken = getCSRFToken();
-let musicId, rating, status, dltCmmntBtn;
+let bookId, rating, status, dltCmmntBtn;
 
 $(document).ready(function () {
     // let elem = document.querySelector('.slider');
     dltCmmntBtn = document.getElementById("dlt-cmmnt-btn");
-    musicId = document.getElementById("music_id").value;
+    bookId = document.getElementById("book_id").value;
     rating = document.getElementById("prev_rate").value;
     // Cannot use the same name as id in html!
     status = document.getElementById("user_wishlist").value === 'True';
@@ -23,9 +23,9 @@ $(document).ready(function () {
         callback: function (currentRating) {
             rating = currentRating;
             $.ajax({
-                url: "/music/rate",
+                url: "/book/rate",
                 type: "POST",
-                data: "musicId=" + musicId + "&rating=" + rating + "&csrfmiddlewaretoken=" + csrftoken,
+                data: "bookId=" + bookId + "&rating=" + rating + "&csrfmiddlewaretoken=" + csrftoken,
                 dataType: "json",
                 success: function (response) {
                     if (typeof response === 'undefined' || 'error' in response){
@@ -72,9 +72,9 @@ function addWishlistButton() {
 
 function wishlistOp(op) {
     $.ajax({
-        url: "/music/wishlist_op",
+        url: "/book/wishlist_op",
         type: "POST",
-        data: "musicId=" + musicId + "&op=" + op + "&csrfmiddlewaretoken=" + csrftoken,
+        data: "bookId=" + bookId + "&op=" + op + "&csrfmiddlewaretoken=" + csrftoken,
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
@@ -89,9 +89,9 @@ function wishlistOp(op) {
 
 function deleteComment() {
     $.ajax({
-        url: "/music/delete_comment",
+        url: "/book/delete_comment",
         type: "POST",
-        data: "musicId=" + musicId + "&csrfmiddlewaretoken=" + csrftoken,
+        data: "bookId=" + bookId + "&csrfmiddlewaretoken=" + csrftoken,
         dataType: "json",
         success: function (response) {
             if (typeof response === 'undefined' || 'error' in response) {
@@ -110,3 +110,12 @@ function deleteComment() {
         }
     });
 }
+
+/*
+ * Method to insert HTML.
+ *
+function addDescription() {
+    let dscrptn = document.getElementById("book_description");
+    dscrptn.insertAdjacentHTML('beforeend', document.getElementById("description_src").value.toString());
+}
+*/

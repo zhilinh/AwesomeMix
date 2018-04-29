@@ -13,6 +13,7 @@ from .forms import RegistrationForm
 from .models import Profile
 from movie.models import Movie, MovieComment
 from music.models import Music, MusicComment
+from book.models import Book, BookComment
 import json
 import ast
 
@@ -64,6 +65,28 @@ class ProfileView(TemplateView):
                 cover_path = None
             context['album_collection'].append({'id': spotify_id, 'poster_path': cover_path})
 
+    def get_reading_list(self, user_profile, context):
+        reading_list = json.loads(user_profile.book_wish_list)
+        context['reading_list'] = []
+        for google_id in reading_list:
+            book = Book.objects.get(pk=google_id)
+            try:
+                cover_path = ast.literal_eval(book.cover_path)['volumeInfo']['imageLinks']['smallThumbnail']
+            except:
+                cover_path = None
+            context['reading_list'].append({'id': google_id, 'poster_path': cover_path})
+
+    def get_book_read(self, user_profile, context):
+        reading_list = json.loads(user_profile.book_read)
+        context['book_read'] = []
+        for google_id in reading_list:
+            book = Book.objects.get(pk=google_id)
+            try:
+                cover_path = ast.literal_eval(book.cover_path)['volumeInfo']['imageLinks']['smallThumbnail']
+            except:
+                cover_path = None
+            context['book_read'].append({'id': google_id, 'poster_path': cover_path})
+
     def get(self, request, *args, **kwargs):
         try:
             user = User.objects.get(username=self.kwargs['username'])
@@ -77,6 +100,8 @@ class ProfileView(TemplateView):
         self.get_movie_watched(user_profile, context)
         self.get_album_playlist(user_profile, context)
         self.get_album_collection(user_profile, context)
+        self.get_reading_list(user_profile, context)
+        self.get_book_read(user_profile, context)
 
         context['user'] = user.username
         context['current_user'] = request.user.username

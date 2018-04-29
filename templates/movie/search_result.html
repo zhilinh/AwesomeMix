@@ -6,19 +6,21 @@
 {% endblock %}
 
 {% block content %}
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
     <div class="container">
         {% for result in results %}
             {% if result.poster_path != None %}
-                <div class="row card-panel z-depth-0">
+                <div class="row card-panel z-depth-0 grey darken-4">
                     <div class="col s3">
                         <!--"w92", "w154", "w185", "w342", "w500", "w780", "original"-->
-                        <a href="/movie/{{ result.id }}">
+                        <a href="{% url 'movie:movie' movieid=result.id %}">
                             <img src="https://image.tmdb.org/t/p/w185{{ result.poster_path }}">
                         </a>
                     </div>
                     <div class="col s9">
-                        <a href="/movie/{{ result.id }}">{{ result.title }}</a>
-                        <p>TMDB Rate: {{ result.vote_average }} ({{ result.vote_count }} votes)<p>
+                        <h5><a href="{% url 'movie:movie' movieid=result.id %}">{{ result.title }}</a></h5>
+                        <p>TMDB Rating: {{ result.vote_average }} ({{ result.vote_count }} votes)<p>
                         <p>Popularity: {{ result.popularity }}</p>
                         <p>{{ result.overview }}</p>
                         <p>{{ result.release_date }}</p>
@@ -26,5 +28,11 @@
                 </div>
             {% endif %}
         {% endfor %}
+        {% if results|length == 0 %}
+            <div class="card-panel grey darken-4" style="height: 600px;">
+                <h5 class="center">Oops... No results found...</h5>
+            </div>
+        {% endif %}
+    </div>
     </div>
 {% endblock %}

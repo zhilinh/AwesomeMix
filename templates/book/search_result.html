@@ -1,0 +1,38 @@
+{% extends "homepage/base.html" %}
+{% load staticfiles %}
+
+{% block user-info %}
+{% include "homepage/nav.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="parallax-container" style="height: 100%">
+    <div class="parallax"><img src="{% static 'assets/bg/music_bg_vrtcl.jpg' %}"></div>
+    <div class="container">
+        {% for book in items %}
+            <div class="row card-panel z-depth-0 grey darken-4">
+                <div class="col s2">
+                    <a href="{% url 'book:book' bookid=book.id %}">
+                        <img src="{{ book.volumeInfo.imageLinks.thumbnail }}" width="100%" height="100%">
+                    </a>
+                </div>
+                <div class="col s10">
+                    <h5><a href="{% url 'book:book' bookid=book.id %}">{{ book.volumeInfo.title }}</a></h5>
+                    {% if book.volumeInfo.averageRating != None %}
+                    <p>Google Rating: {{ book.volumeInfo.averageRating }} / 5.0 ({{ book.volumeInfo.ratingsCount }} votes)<p>
+                    {% endif %}
+                    <p>{% for author in book.volumeInfo.authors %}{{ author }} / {% endfor %}</p>
+                    <p>{{ book.volumeInfo.publisher }}</p>
+                    <p>{{ book.volumeInfo.publishedDate }}</p>
+                    <p>{{ book.saleInfo.listPrice.amount }} {{ book.saleInfo.listPrice.currencyCode }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        {% if items|length == 0 %}
+            <div class="card-panel grey darken-4" style="height: 600px;">
+                <h5 class="center">Oops... No results found...</h5>
+            </div>
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}

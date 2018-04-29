@@ -203,7 +203,7 @@ def search(request):
         response = search.movie(query=movie_name, language='en-US', page=1, include_adult=False)
         return render(request, 'movie/search_result.html', response)
     else:
-        return Http404
+        raise Http404
 
 @transaction.atomic
 def rate(request):
@@ -217,18 +217,22 @@ def rate(request):
     context = {}
     user_profile = request.user.user_profile
 
-    movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
-    movie.all_rates = movie.all_rates + decimal.Decimal(request.POST['rating'])
-    movie.rater_num = movie.rater_num + 1
-    movie.save()
+
+
 
     try:
         comment = MovieComment.objects.get(movie_id=request.POST['movieId'],
                                            user=request.user)
     except:
         comment = MovieComment(movie_id=request.POST['movieId'], user=request.user)
+    movie = Movie.objects.get(tmdb_id=request.POST['movieId'])
+    movie.all_rates = movie.all_rates - comment.rate + decimal.Decimal(request.POST['rating'])
+    if comment.rate == 0:
+        movie.rater_num = movie.rater_num + 1
     comment.rate = request.POST['rating']
+    movie.save()
     comment.save()
+
     watched_list = set(json.loads(user_profile.movie_watched))
     watched_list.add(movie.tmdb_id)
     user_profile.movie_watched = json.dumps(list(watched_list))
@@ -239,7 +243,7 @@ def rate(request):
 @transaction.atomic
 def wishlist_op(request):
     if request.method != "POST" or 'movieId' not in request.POST:
-        return Http404
+        raise Http404
     if not request.user.is_authenticated():
         message = 'Please login first to add it to your wishlist.'
         json_error = '{ "error": "' + message + '" }'
@@ -262,7 +266,7 @@ def wishlist_op(request):
 @transaction.atomic
 def delete_comment(request):
     if request.method != "POST" or 'movieId' not in request.POST:
-        return Http404
+        raise Http404
     if not request.user.is_authenticated():
         message = 'Please login first to modify your comments.'
         json_error = '{ "error": "' + message + '" }'

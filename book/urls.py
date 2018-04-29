@@ -15,13 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 
-from homepage import views
-from django.contrib.auth.decorators import login_required
+from . import views
 
+app_name = 'book'
 urlpatterns = [
-    url(r'^$', views.MainView.as_view()),
-    url(r'^homepage/', include('homepage.urls')),
-    url(r'^movie/', include('movie.urls')),
-    url(r'^music/', include('music.urls')),
-    url(r'^book/', include('book.urls'))
+    url(r'^$', views.MainView.as_view(), name='homepage'),
+    url(r'^search_result', views.search, name='search'),
+    url(r'^rate', views.rate, name='rate'),
+    url(r'^wishlist_op', views.wishlist_op, name='wishlist_op'),
+    url(r'^delete_comment', views.delete_comment, name='delete_comment'),
+    url(r'^(?P<bookid>[-a-zA-Z0-9_]+)$', views.BookView.as_view(), name='book'),
+    url(r'^(?P<bookid>[-a-zA-Z0-9_]+)/comment', views.read_comment, name='read_comment')
 ]

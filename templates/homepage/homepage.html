@@ -38,7 +38,7 @@
             <div class="col s12 m4">
                 <div class="icon-block">
                     <h2 class="center brown-text"><i class="material-icons">book</i></h2>
-                    <h5 class="center">Book</h5>
+                    <h5 class="center"><a href="{% url 'book:homepage' %}">Book</a></h5>
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
                     <ul>
                         <li><a class="white-text" href="{% url 'movie:homepage' %}">Movie</a></li>
                         <li><a class="white-text" href="{% url 'music:homepage' %}">Music</a></li>
-                        <li><a class="white-text" href="#!">Book</a></li>
+                        <li><a class="white-text" href="{% url 'book:homepage' %}">Book</a></li>
                     </ul>
                 </div>
                 <div class="col l3 s12">

@@ -33,11 +33,12 @@ class MainView(TemplateView):
     template_name = 'music/homepage.html'
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
+        search_form = MusicSearchForm(self.request.GET or None)
         try:
             results = spotify.new_releases(country='US')
         except:
             raise Http404
+        results['search_form'] = search_form
         return self.render_to_response(results)
 
 class MusicView(TemplateView):
@@ -112,13 +113,13 @@ def search(request):
         results = spotify.search(q='album:' + request.GET['music'], type='album')
         return render(request, 'music/search_result.html', results)
     else:
-        return Http404
+        raise Http404
 
 
 @transaction.atomic
 def wishlist_op(request):
     if request.method != "POST" or 'musicId' not in request.POST:
-        return Http404
+        raise Http404
     if not request.user.is_authenticated():
         message = 'Please login first to add it to your wishlist.'
         json_error = '{ "error": "' + message + '" }'
@@ -150,18 +151,22 @@ def rate(request):
     context = {}
     user_profile = request.user.user_profile
 
-    music = Music.objects.get(spotify_id=request.POST['musicId'])
-    music.all_rates = music.all_rates + decimal.Decimal(request.POST['rating'])
-    music.rater_num = music.rater_num + 1
-    music.save()
+
+
 
     try:
         comment = MusicComment.objects.get(music_id=request.POST['musicId'],
                                            user=request.user)
     except:
         comment = MusicComment(music_id=request.POST['musicId'], user=request.user)
+    music = Music.objects.get(spotify_id=request.POST['musicId'])
+    music.all_rates = music.all_rates - comment.rate + decimal.Decimal(request.POST['rating'])
+    if comment.rate == 0:
+        music.rater_num = music.rater_num + 1
     comment.rate = request.POST['rating']
+    music.save()
     comment.save()
+
     playlist = set(json.loads(user_profile.music_played))
     playlist.add(music.spotify_id)
     user_profile.music_played = json.dumps(list(playlist))
@@ -172,7 +177,7 @@ def rate(request):
 @transaction.atomic
 def delete_comment(request):
     if request.method != "POST" or 'musicId' not in request.POST:
-        return Http404
+        raise Http404
     if not request.user.is_authenticated():
         message = 'Please login first to modify your comments.'
         json_error = '{ "error": "' + message + '" }'

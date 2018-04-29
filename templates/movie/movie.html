@@ -30,8 +30,12 @@
                 <p>IMDB: <a href="http://www.imdb.com/title/{{ imdb_id }}">{{ imdb_id }}</a></p>
             </div>
             <div class="col s2">
-                <h4 style="display: inline;">{{ avg_rate }}</h4><p style="display: inline;"> / 10</p>
-                <p>{{ rater_num }}</p>
+                {% if rater_num > 0 %}
+                    <h4 style="display: inline;">{{ avg_rate }}</h4><p style="display: inline;"> / 10</p>
+                    <p>{{ rater_num }}</p>
+                {% else %}
+                    <p>Needs More Ratings</p>
+                {% endif %}
                 <div id="add_to_wishlist">
                     <input type="hidden" id="user_wishlist" value={{ wishlist }}>
                 </div>
