@@ -93,6 +93,8 @@ class BookView(TemplateView):
         url = "https://www.googleapis.com/books/v1/volumes/" + bookid
         response = requests.get(url, params=payload)
         context = response.json()
+        if "error" in context:
+            raise Http404
         context['id'] = bookid
 
         self.get_user_info(request, context)

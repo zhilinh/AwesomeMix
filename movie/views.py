@@ -163,6 +163,8 @@ class MovieView(TemplateView):
         response = requests.get(url, params=payload)
 
         result = response.json()
+        if "status_code" in result and result["status_code"] == 34:
+            raise Http404
         # Replace the origin credits to simplified credits
         result['credits'] = self.get_credits(result)
         result['videos'] = self.get_videos(result)

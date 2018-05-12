@@ -4,7 +4,10 @@
 
 #
 
-A web application for movie, music album, book query and comments. Users are able to query movie, music and book databases supported by APIs. Useful information are provided with different types of queries, including movie tickets, movie times, album track previews, best-seller books and previews, sale information. Users can give ratings and comments on them and add them to their wishlists.
+A web application that integrates movie, music album, book info queries and comments.
+Users are able to search for movie, music and book info from databases supported by APIs.
+Useful information is provided within different types of queries, including movie tickets and times, album track previews, best-seller books and previews, sale information, etc.
+Signed-in users can give ratings and comments, and add them to their wish-lists.
 
 ## Running
 
@@ -80,10 +83,3 @@ Then, you can install any python package for the app in `djangoenv`, and make it
 ## Authors
 
 - **Zhilin Huang**
-
-## Reference
-
-- [Django Docs](https://docs.djangoproject.com/en/1.11/intro/tutorial01/)
-- [Virtualenv Docs](https://virtualenv.pypa.io/en/stable/installation/)
-- [Forms Example](https://github.com/CMU-Web-Application-Development/forms-example)
-- [Cross-site request forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery)
