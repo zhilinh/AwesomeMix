@@ -22,6 +22,7 @@ config.read(os.path.join(BASE_DIR, 'config.ini'))
 TMDB_API_KEY = config.get("API_KEY", "TMDB_API_KEY")
 GRACENOTE_API_KEY = config.get("API_KEY", "GRACENOTE_API_KEY")
 tmdb.API_KEY = config.get("API_KEY", "TMDB_API_KEY")
+GEO_API_KEY = config.get("API_KEY", "GEO_API_KEY")
 
 NOW_PLAYING_MOVIES = {}
 
@@ -52,11 +53,18 @@ class MainView(TemplateView):
                                          year=time.struct_time.tm_year)
             if tmdb_response['total_results'] > 0:
                 result = tmdb_response['results'][0]
-                context['hits'].append({'id': result['id'],
+                try:
+                    context['hits'].append({'id': result['id'],
                                         'title': movie['title'],
                                         'showtimes': movie['showtimes'],
                                         'ratings': movie['ratings'],
                                         'poster_path': result['poster_path']})
+                # Ratings might be missing
+                except:
+                    context['hits'].append({'id': result['id'],
+                                            'title': movie['title'],
+                                            'showtimes': movie['showtimes'],
+                                            'poster_path': result['poster_path']})
         return self.render_to_response(context)
 
 class MovieView(TemplateView):
@@ -310,24 +318,21 @@ def read_comment(request, movieid):
     return render(request, 'movie/movie_comment.html', context)
 
 def process_request(request):
-    try:
-        real_ip = request.META['HTTP_X_FORWARDED_FOR']
-    except KeyError:
-        return None
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
     else:
-        # HTTP_X_FORWARDED_FOR can be a comma-separated list of IPs. The
-        # client's IP will be the first one.
-        real_ip = real_ip.split(",")[0].strip()
-    return real_ip
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 def getZIP(request):
     ip = process_request(request)
-    if ip == None:
-        ip = '127.0.0.1'
-    freegeoip_url = "https://freegeoip.net/json/" + ip
-    response = requests.get(freegeoip_url)
+    # Changed the api from freegeoip to ipstack
+    freegeoip_url = "http://api.ipstack.com/" + ip
+    api_key = {"access_key": GEO_API_KEY}
+    response = requests.get(freegeoip_url, params=api_key)
     geo_info = response.json()
-    zip_code = geo_info['zip_code']
-    if len(zip_code) == 0:
+    zip_code = geo_info['zip']
+    if zip_code == None:
         zip_code = '15213'
     return zip_code
