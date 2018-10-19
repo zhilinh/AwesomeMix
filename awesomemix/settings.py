@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import django_heroku
+
 import os
 
 from configparser import ConfigParser
@@ -102,12 +104,19 @@ LOGIN_REDIRECT_URL = '/homepage'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'django',
+#         'USER': MYSQL_USER,
+#         'PASSWORD': MYSQL_PASSWORD,
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django',
-        'USER': MYSQL_USER,
-        'PASSWORD': MYSQL_PASSWORD,
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3")
     }
 }
 
@@ -145,6 +154,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -154,3 +165,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'homepage/profile')
 
 print('Email host:port = {host}:{port}, user={user}'.format(
     host=EMAIL_HOST, port=EMAIL_PORT, user=EMAIL_HOST_USER))
+	
+# Activate Django-Heroku.
+django_heroku.settings(locals())
